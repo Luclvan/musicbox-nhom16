@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phòng</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="active">Quản lý Phòng</a>
+        <a href="#">Dịch vụ</a>
+        <a href="#">Nhân viên</a>
+        <a href="#">Giám sát & báo cáo</a>
+    </nav>
+
+    <div class="container">
+        
+        <div class="summary-bar">
+            <div class="legend">
+                <div class="legend-item"><div class="color-box bg-available"></div> Phòng trống</div>
+                <div class="legend-item"><div class="color-box bg-reserved"></div> Đã đặt trước</div>
+                <div class="legend-item"><div class="color-box bg-in-use"></div> Đang sử dụng</div>
+            </div>
+            <div class="stats">
+                <div class="stat-box st-available">Phòng trống <span>4</span></div>
+                <div class="stat-box st-reserved">Đã đặt trước <span>6</span></div>
+                <div class="stat-box st-in-use">Đang sử dụng <span style="color:#3b82f6;">6</span></div>
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="floor-title">Tầng 1</div>
+            <div class="room-grid">
+                <div class="room-card bg-available" data-name="Phòng 101">
+                    <div class="icon">✔️</div>
+                    <div class="room-name">Phòng 101</div>
+                    <div class="room-detail">4 người</div>
+                </div>
+                <div class="room-card bg-in-use" data-name="Phòng 102">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 102</div>
+                    <div class="room-detail">🕒 14:00 - 16:00</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 103">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 103</div>
+                    <div class="room-detail">🕒 17:00 - 19:00</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 104">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 104</div>
+                    <div class="room-detail">🕒 18:00 - 21:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="floor-title">Tầng 2</div>
+            <div class="room-grid">
+                <div class="room-card bg-available" data-name="Phòng 201">
+                    <div class="icon">✔️</div>
+                    <div class="room-name">Phòng 201</div>
+                    <div class="room-detail">4 người</div>
+                </div>
+                <div class="room-card bg-in-use" data-name="Phòng 202">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 202</div>
+                    <div class="room-detail">🕒 13:30 - 15:30</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 203">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 203</div>
+                    <div class="room-detail">🕒 16:00 - 18:00</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 204">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 204</div>
+                    <div class="room-detail">🕒 19:00 - 22:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="floor-title">Tầng 3</div>
+            <div class="room-grid">
+                <div class="room-card bg-in-use" data-name="Phòng 301">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 301</div>
+                    <div class="room-detail">🕒 15:00 - 17:00</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 302">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 302</div>
+                    <div class="room-detail">🕒 17:30 - 20:30</div>
+                </div>
+                <div class="room-card bg-available" data-name="Phòng 303">
+                    <div class="icon">✔️</div>
+                    <div class="room-name">Phòng 303</div>
+                    <div class="room-detail">4 người</div>
+                </div>
+                <div class="room-card bg-available selected" data-name="Phòng 304">
+                    <div class="icon">✔️</div>
+                    <div class="room-name">Phòng 304</div>
+                    <div class="room-detail">6 người</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floor">
+            <div class="floor-title">Tầng 4</div>
+            <div class="room-grid">
+                <div class="room-card bg-in-use" data-name="Phòng 401">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 401</div>
+                    <div class="room-detail">🕒 14:30 - 17:30</div>
+                </div>
+                <div class="room-card bg-reserved" data-name="Phòng 402">
+                    <div class="icon">📅</div>
+                    <div class="room-name">Phòng 402</div>
+                    <div class="room-detail">🕒 18:00 - 21:00</div>
+                </div>
+                <div class="room-card bg-in-use" data-name="Phòng 403">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 403</div>
+                    <div class="room-detail">🕒 16:00 - 18:00</div>
+                </div>
+                <div class="room-card bg-in-use" data-name="Phòng 404">
+                    <div class="icon">🎵</div>
+                    <div class="room-name">Phòng 404</div>
+                    <div class="room-detail">🕒 15:00 - 17:00</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên phòng</th>
+                    <th>Tên khách hàng</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Thời gian</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr>
+                    <td>Phòng 304</td>
+                    <td></td>
+                    <td>--/--/--  --:--:--</td>
+                    <td>--/--/--  --:--:--</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="roomContextMenu" class="context-menu">
+        <div class="menu-item" id="menu-reserve">
+            <span class="icon">📄</span> Đặt trước phòng
+        </div>
+        <div class="menu-item" id="menu-cancel">
+            <span class="icon">📂</span> Huỷ đặt trước phòng
+        </div>
+        <div class="menu-item" id="menu-transfer">
+            <span class="icon">🔗</span> Chuyển phòng
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="menu-checkin">
+            <span class="icon">📤</span> Tạo phiếu thuê phòng
+        </div>
+        <div class="menu-item" id="menu-checkout">
+            <span class="icon">📥</span> Thanh toán
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="menu-service">
+            <span class="icon">🛒</span> Gọi dịch vụ
+        </div>
+    </div>
+    <div id="transferModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Chuyển phòng</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Chuyển từ:</label>
+                    <input type="text" id="transferFrom" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Chuyển tới: <span class="required">*</span></label>
+                    <div class="custom-dropdown">
+                        <input type="text" id="transferTo" placeholder="Nhập để tìm kiếm..." autocomplete="off">
+                        <ul id="transferList" class="dropdown-list">
+                            <li>Phòng 101</li>
+                            <li>Phòng 201</li>
+                            <li>Phòng 303</li>
+                            <li>Phòng 304</li>
+                            <li>Phòng 503</li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="transferError" class="error-msg">
+                    <span>!</span> Vui lòng chọn phòng chuyển tới
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnConfirmTransfer" class="btn-primary">Xác nhận</button>
+                <button id="btnCancelTransfer" class="btn-secondary">Huỷ</button>
+            </div>
+        </div>
+    </div>
+    <div id="toastMessage" class="toast-success">
+        <div class="toast-content">
+            <span class="toast-icon">✔️</span>
+            <div>
+                <div class="toast-title">Chuyển phòng thành công!</div>
+                <div class="toast-desc">Thông tin đã được lưu vào hệ thống</div>
+            </div>
+        </div>
+        <span class="toast-close">&times;</span>
+    </div>
+    <div id="reserveModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Đặt trước phòng</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tên khách hàng:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="reserveName">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SĐT: <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="reservePhone">
+                        <div id="phoneError" class="input-error-text">
+                            <span>!</span> Số điện thoại không được để trống. Vui lòng nhập lại
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Thời gian đặt: <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="datetime-local" id="reserveTime">
+                        <div id="timeError" class="input-error-text">
+                            <span>!</span> Ngày giờ không hợp lệ hoặc đã được đặt. Vui lòng chọn ngày giờ khác
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnConfirmReserve" class="btn-primary">Xác nhận</button>
+                <button id="btnCancelReserve" class="btn-secondary">Huỷ</button>
+            </div>
+        </div>
+    </div>
+    <div id="cancelModal" class="modal-overlay">
+        <div class="modal-box" style="width: 480px;">
+            <div class="modal-header">
+                <h3>Huỷ đặt trước phòng</h3>
+            </div>
+            <div class="modal-body" style="padding: 40px 20px;">
+                <div class="confirm-content">
+                    <span class="warning-icon">⚠️</span>
+                    <p class="confirm-text">Bạn có chắc muốn huỷ đặt trước phòng?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnConfirmCancel" class="btn-primary">Xác nhận</button>
+                <button id="btnCancelCancel" class="btn-secondary">Huỷ</button>
+            </div>
+        </div>
+    </div>
+<script src="js/script.js"></script>
+</body>
+</html>

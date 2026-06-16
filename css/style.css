@@ -986,3 +986,13 @@ td {
 .dv-table tr.selected {
     background: #d7f2ff;
 }
+
+.dv-text-left {
+    text-align: left !important;
+    padding-left: 16px !important;
+}
+
+.dv-text-right {
+    text-align: right !important;
+    padding-right: 16px !important;
+}

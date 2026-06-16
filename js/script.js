@@ -591,11 +591,26 @@ if (document.getElementById("dvTableBody")) {
 
             tr.innerHTML = `
                 <td>${s.id}</td>
-                <td>${s.name}</td>
-                <td>${s.type}</td>
-                <td>${formatMoney(s.price)}</td>
-                <td>${s.quantity}</td>
-                <td class="${getStatusClass(s.status)}">${s.status}</td>
+
+                <td style="text-align:left;padding-left:16px;">
+                    ${s.name}
+                </td>
+
+                <td style="text-align:left;padding-left:16px;">
+                    ${s.type}
+                </td>
+
+                <td style="text-align:right;padding-right:16px;">
+                    ${formatMoney(s.price)}
+                </td>
+
+                <td style="text-align:right;padding-right:16px;">
+                    ${s.quantity}
+                </td>
+
+                <td class="${getStatusClass(s.status)}">
+                    ${s.status}
+                </td>
             `;
 
             tr.addEventListener("click", function (e) {

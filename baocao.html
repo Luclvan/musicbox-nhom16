@@ -3,24 +3,576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Phòng</title>
-<link rel="stylesheet" href="css/style.css">
+    <title>Giám sát & Báo cáo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/baocao.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
-    <a href="index.html" >Quản lý Phòng</a>
+    <a href="index.html">Quản lý Phòng</a>
     <a href="dichvu.html">Dịch vụ</a>
     <a href="nhanvien.html">Nhân viên</a>
     <a href="baocao.html" class="active">Giám sát & báo cáo</a>
 </nav>
 
+<!-- ================================================
+     VIEW 1 : TỔNG QUAN
+     ================================================ -->
+<div id="viewOverview" class="view-section">
 
 
+    <div class="ov-main">
+        <p class="ov-subtitle">Chọn chức năng cần thực hiện</p>
+
+        <div class="feature-cards">
+            <!-- THẺ 1 : Nhật ký -->
+            <div class="feature-card" id="cardNhatKy">
+                <div class="fc-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                </div>
+                <h2 class="fc-title">Xem nhật ký hệ thống</h2>
+                <p class="fc-desc">Theo dõi lịch sử thao tác của nhân viên: mở phòng, đóng phòng, thanh toán, chuyển phòng.</p>
+                <a href="#" class="fc-link" id="btnOpenAuth">Yêu cầu xác thực mật khẩu</a>
+            </div>
+
+            <!-- THẺ 2 : Báo cáo -->
+            <div class="feature-card" id="cardBaoCao">
+                <div class="fc-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                </div>
+                <h2 class="fc-title">Báo cáo &amp; Thống kê</h2>
+                <p class="fc-desc">Tổng hợp doanh thu phòng, dịch vụ, khung giờ cao điểm và chấm công nhân viên.</p>
+                <a href="#" class="fc-link" id="btnOpenReport">Xuất Excel / PDF</a>
+            </div>
+        </div>
+
+        <!-- Thanh thông tin -->
+        <div class="info-bars">
+            <div class="info-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="M8 2v4M16 2v4"/>
+                </svg>
+                <span>Kỳ hiện tại: <strong>Tháng 05/2026</strong></span>
+            </div>
+            <div class="info-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                    <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+                </svg>
+                <span>CSDL: <span class="status-dot"></span> <span class="status-text">Kết nối thành công</span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================
+     VIEW 2 : BÁO CÁO & THỐNG KÊ
+     ================================================ -->
+<div id="viewReport" class="view-section" style="display:none">
 
 
+    <div class="report-wrap">
+
+        <!-- TAB BAR -->
+        <div class="tab-bar" role="tablist">
+            <button class="tab-btn active" data-tab="doanhthu">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                </svg>
+                Doanh thu phòng
+            </button>
+            <button class="tab-btn" data-tab="dichvu">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                Dịch vụ
+            </button>
+            <button class="tab-btn" data-tab="khunggio">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Khung giờ cao điểm
+            </button>
+            <button class="tab-btn" data-tab="chamcong">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Chấm công NV
+            </button>
+        </div>
+
+        <!-- ── TAB : DOANH THU PHÒNG ── -->
+        <div id="tabDoanhthu" class="tab-panel active">
+            <div class="panel-inner">
+                <h2 class="panel-title">Báo cáo doanh thu phòng</h2>
+
+                <!-- FIX 7: "HOẶC" separator + FIX 6: button disabled -->
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Tháng/Năm <span class="req">*</span></label>
+                        <input type="text" id="dtMonth" class="filter-input fi-sm" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="dtRangeGroup">
+                        <label class="filter-label">Hoặc: Từ ngày</label>
+                        <input type="text" id="dtFrom" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="dtToGroup">
+                        <label class="filter-label">Đến ngày</label>
+                        <input type="text" id="dtTo" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <button class="btn-view-report" id="btnViewDt" disabled>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+                            <line x1="8" y1="18" x2="16" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+                            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                        </svg>
+                        Xem báo cáo
+                    </button>
+                    <div class="filter-spacer"></div>
+                    <button class="btn-export-sm excel" onclick="triggerExport('Excel','doanh-thu')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Xuất Excel
+                    </button>
+                    <button class="btn-export-sm pdf" onclick="triggerExport('PDF','doanh-thu')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        Xuất PDF
+                    </button>
+                    
+                </div>
+
+                <!-- Hint (hiện khi chưa xem báo cáo) -->
+                <div class="filter-hint" id="hintDt">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    Chọn tháng/năm hoặc khoảng ngày để xem báo cáo tổng hợp doanh thu phòng hát trong kỳ.
+                </div>
+
+                <!-- Kết quả báo cáo -->
+                <div id="dataDt" class="report-data" style="display:none">
+                    
+                    <!-- FIX 1: tất cả KPI dùng màu primary (teal) -->
+                    <div class="kpi-row">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Tổng tiền phòng</div>
+                            <div class="kpi-value">18.500.000 đ</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Tổng tiền DV</div>
+                            <div class="kpi-value">7.200.000 đ</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Tổng doanh thu</div>
+                            <div class="kpi-value">25.700.000 đ</div>
+                        </div>
+                        <div class="kpi-card">
+                            <!-- FIX 1: count → kpi-count (đen, không phải cam) -->
+                            <div class="kpi-label">Số hóa đơn</div>
+                            <div class="kpi-value kpi-count">143</div>
+                        </div>
+                    </div>
+
+                    <!-- FIX 2: Biểu đồ CÓ trục Y -->
+                    <div class="chart-box">
+                        <div class="chart-title">Biểu đồ doanh thu theo ngày (tháng 5/2026)</div>
+                        <div class="chart-wrap">
+                            <canvas id="chartDt"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã HĐ</th>
+                                    <th>Ngày</th>
+                                    <th>Tiền phòng</th>
+                                    <th>Tiền DV</th>
+                                    <th>Tổng cộng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyDt"></tbody>
+                        </table>
+                        <div class="pagination" id="pagesDt"></div>
+                    </div>
+                </div>
+
+                <!-- Empty state: không có dữ liệu -->
+                <div id="emptyDt" class="empty-state" style="display:none">
+                    <div class="es-warn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        Không có dữ liệu trong khoảng thời gian đã chọn.
+                    </div>
+                    <div class="es-body">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                            <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                            <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+                        </svg>
+                        <p>Không có dữ liệu trong khoảng thời gian đã chọn</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB : DỊCH VỤ ── -->
+        <div id="tabDichvu" class="tab-panel">
+            <div class="panel-inner">
+                <h2 class="panel-title">Báo cáo doanh dịch vụ</h2>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Tháng/Năm <span class="req">*</span></label>
+                        <input type="text" id="dvMonth" class="filter-input fi-sm" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="dvRangeGroup">
+                        <label class="filter-label">Hoặc: Từ ngày</label>
+                        <input type="text" id="dvFrom" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="dvToGroup">
+                        <label class="filter-label">Đến ngày</label>
+                        <input type="text" id="dvTo" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <button class="btn-view-report" id="btnViewDv" disabled>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        Xem báo cáo
+                    </button>
+                    <div class="filter-spacer"></div>
+                    <button class="btn-export-sm excel" onclick="triggerExport('Excel','dich-vu')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Xuất Excel</button>
+                    <button class="btn-export-sm pdf" onclick="triggerExport('PDF','dich-vu')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Xuất PDF</button>
+                </div>
+                <div class="filter-hint" id="hintDv">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Chọn tháng/năm hoặc khoảng ngày để xem báo cáo tổng hợp dịch vụ trong kỳ.
+            </div>
+                <div id="dataDv" class="report-data" style="display:none">
+                    <div class="kpi-row">
+                        <div class="kpi-card"><div class="kpi-label">Tổng lượt đặt DV</div><div class="kpi-value">410</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Tổng doanh thu DV</div><div class="kpi-value">7.475.000 đ</div></div>
+                        <div class="kpi-card"><div class="kpi-label">DV phổ biến nhất</div><div class="kpi-value">Bia Tiger</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Số HD có DV</div><div class="kpi-value kpi-count">95</div></div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr>
+                              <th>Tên dịch vụ</th>
+                              <th>Số lượng</th>
+                              <th>Đơn giá</th>
+                              <th>Thành tiền</th>
+                              <th>% Tổng</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr><td class="td-l">Bia Tiger</td><td class="td-r">95</td><td class="td-r">25.000 đ</td><td class="td-r">2.375.000 đ</td><td class="td-r">32%</td></tr>
+                                <tr><td class="td-l">Nước suối</td><td class="td-r">100</td><td class="td-r">10.000 đ</td><td class="td-r">1.000.000 đ</td><td class="td-r">13%</td></tr>
+                                <tr><td class="td-l">Coca Cola</td><td class="td-r">70</td><td class="td-r">15.000 đ</td><td class="td-r">1.050.000 đ</td><td class="td-r">14%</td></tr>
+                                <tr><td class="td-l">Pepsi</td><td class="td-r">60</td><td class="td-r">15.000 đ</td><td class="td-r">900.000 đ</td><td class="td-r">12%</td></tr>
+                                <tr><td class="td-l">Bia Heineken</td><td class="td-r">45</td><td class="td-r">30.000 đ</td><td class="td-r">1.350.000 đ</td><td class="td-r">18%</td></tr>
+                                <tr><td class="td-l">Snack các loại</td><td class="td-r">40</td><td class="td-r">20.000 đ</td><td class="td-r">800.000 đ</td><td class="td-r">11%</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination"><button class="page-btn">‹</button><span class="page-current">1</span><button class="page-btn">›</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB : KHUNG GIỜ CAO ĐIỂM ── -->
+        <div id="tabKhunggio" class="tab-panel">
+            <div class="panel-inner">
+                <h2 class="panel-title">Phân tích khung giờ cao điểm</h2>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Tháng/Năm <span class="req">*</span></label>
+                        <input type="text" id="kgMonth" class="filter-input fi-sm" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="kgRangeGroup">
+                        <label class="filter-label">Hoặc: Từ ngày</label>
+                        <input type="text" id="kgFrom" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="kgToGroup">
+                        <label class="filter-label">Đến ngày</label>
+                        <input type="text" id="kgTo" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <button class="btn-view-report" id="btnViewKg" disabled>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        Xem báo cáo
+                    </button>
+                    <div class="filter-spacer"></div>
+                    <button class="btn-export-sm excel" onclick="triggerExport('Excel','khung-gio')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Xuất Excel</button>
+                    <button class="btn-export-sm pdf" onclick="triggerExport('PDF','khung-gio')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Xuất PDF</button>
+                </div>
+                <div class="filter-hint" id="hintKg">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Chọn tháng/năm hoặc khoảng ngày để xem phân tích khung giờ cao điểm.
+            </div>
+                <div id="dataKg" class="report-data" style="display:none">
+                    <div class="kpi-row">
+                        <div class="kpi-card"><div class="kpi-label">Giờ đông nhất</div><div class="kpi-value">18:00–20:00</div></div>
+                        <div class="kpi-card"><div class="kpi-label">TB phòng/giờ cao điểm</div><div class="kpi-value">15.5 phòng</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Phòng bận nhất</div><div class="kpi-value">VIP-01</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Tỉ lệ lấp đầy TB</div><div class="kpi-value kpi-count">82%</div></div>
+                    </div>
+                    <!-- FIX 2: chart có trục Y -->
+                    <div class="chart-box">
+                        <div class="chart-title">Biểu đồ lượt đặt phòng theo khung giờ (tháng 5/2026)</div>
+                        <div class="chart-wrap">
+                            <canvas id="chartKg"></canvas>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr>
+                              <th>Khung giờ</th>
+                              <th>Số lượt đặt</th>
+                              <th>Doanh thu</th>
+                              <th>Tỉ lệ lấp đầy</th>
+                              <th>Ghi chú</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr><td>08:00–10:00</td><td class="td-r">4</td><td class="td-r">360.000 đ</td><td class="td-r">20%</td><td>Vắng</td></tr>
+                                <tr><td>10:00–12:00</td><td class="td-r">8</td><td class="td-r">720.000 đ</td><td class="td-r">40%</td><td>Bình thường</td></tr>
+                                <tr><td>12:00–14:00</td><td class="td-r">11</td><td class="td-r">990.000 đ</td><td class="td-r">55%</td><td>Bình thường</td></tr>
+                                <tr><td>14:00–16:00</td><td class="td-r">12</td><td class="td-r">1.080.000 đ</td><td class="td-r">60%</td><td>Bình thường</td></tr>
+                                <tr><td>16:00–18:00</td><td class="td-r">14</td><td class="td-r">1.260.000 đ</td><td class="td-r">70%</td><td>Đông dần</td></tr>
+                                <tr><td>18:00–20:00</td><td class="td-r">16</td><td class="td-r">1.440.000 đ</td><td class="td-r">80%</td><td class="status-busy">Bận rộn</td></tr>
+                                <tr><td>20:00–22:00</td><td class="td-r">18</td><td class="td-r">1.770.000 đ</td><td class="td-r">90%</td><td class="status-peak">Cao điểm</td></tr>
+                                <tr><td>22:00–00:00</td><td class="td-r">10</td><td class="td-r">900.000 đ</td><td class="td-r">50%</td><td>Bình thường</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination"><button class="page-btn">‹</button><span class="page-current">1</span><button class="page-btn">›</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB : CHẤM CÔNG NV ── -->
+        <div id="tabChamcong" class="tab-panel">
+            <div class="panel-inner">
+                <h2 class="panel-title">Báo cáo chấm công nhân viên</h2>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Tháng/Năm <span class="req">*</span></label>
+                        <input type="text" id="ccMonth" class="filter-input fi-sm" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="ccRangeGroup">
+                        <label class="filter-label">Hoặc: Từ ngày</label>
+                        <input type="text" id="ccFrom" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="filter-group filter-group-dim" id="ccToGroup">
+                        <label class="filter-label">Đến ngày</label>
+                        <input type="text" id="ccTo" class="filter-input date-picker" placeholder="dd/mm/yyyy">
+                    </div>
+                    <button class="btn-view-report" id="btnViewCc" disabled>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        Xem báo cáo
+                    </button>
+                    <div class="filter-spacer"></div>
+                    <button class="btn-export-sm excel" onclick="triggerExport('Excel','cham-cong')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Xuất Excel</button>
+                    <button class="btn-export-sm pdf" onclick="triggerExport('PDF','cham-cong')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Xuất PDF</button>
+                </div>
+                <div class="filter-hint" id="hintCc">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Chọn tháng/năm hoặc khoảng ngày để xem báo cáo chấm công nhân viên.
+            </div>
+                <div id="dataCc" class="report-data" style="display:none">
+                    <div class="kpi-row">
+                        <div class="kpi-card"><div class="kpi-label">Tổng nhân viên</div><div class="kpi-value kpi-count">4</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Tổng ca làm</div><div class="kpi-value kpi-count">52</div></div>
+                        <div class="kpi-card"><div class="kpi-label">TB giờ/ca</div><div class="kpi-value">8.2 giờ</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Tỉ lệ đúng giờ</div><div class="kpi-value">94%</div></div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr>
+                              <th>Nhân viên</th>
+                              <th>Ngày</th>
+                              <th>Ca</th>
+                              <th>Giờ vào</th>
+                              <th>Giờ ra</th>
+                              <th>Tổng giờ</th>
+                              <th>Trạng thái</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr><td>Nguyễn Văn A</td><td>25/05</td><td>Tối</td><td>18:00</td><td>02:00</td><td class="td-r">8h</td><td><span class="badge-ok">Đúng giờ</span></td></tr>
+                                <tr><td>Trần Thị B</td><td>25/05</td><td>Chiều</td><td>14:00</td><td>22:00</td><td class="td-r">8h</td><td><span class="badge-ok">Đúng giờ</span></td></tr>
+                                <tr><td>Lê Văn C</td><td>25/05</td><td>Sáng</td><td>08:00</td><td>16:00</td><td class="td-r">8h</td><td><span class="badge-ok">Đúng giờ</span></td></tr>
+                                <tr><td>Phạm Thị D</td><td>25/05</td><td>Tối</td><td>18:15</td><td>02:10</td><td class="td-r">8h</td><td><span class="badge-late">Muộn giờ</span></td></tr>
+                                <tr><td>Nguyễn Văn A</td><td>24/05</td><td>Tối</td><td>18:00</td><td>02:00</td><td class="td-r">8h</td><td><span class="badge-ok">Đúng giờ</span></td></tr>
+                                <tr><td>Trần Thị B</td><td>24/05</td><td>Chiều</td><td>14:00</td><td>22:00</td><td class="td-r">8h</td><td><span class="badge-ok">Đúng giờ</span></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination"><button class="page-btn">‹</button><span class="page-current">1</span><button class="page-btn">›</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /report-wrap -->
+</div><!-- /viewReport -->
+
+<!-- ================================================
+     VIEW 3 : NHẬT KÝ HỆ THỐNG
+     ================================================ -->
+<div id="viewLog" class="view-section" style="display:none">
 
 
+    <div class="log-wrap">
+        <!-- Hàng filter -->
+        <div class="log-filter-row">
+            <div class="filter-group">
+                <label class="filter-label">Từ ngày</label>
+                <input type="text" id="logFrom" class="filter-input date-picker" value="2026-05-01" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Đến ngày</label>
+                <input type="text" id="logTo" class="filter-input date-picker" value="2026-05-25" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Loại thao tác</label>
+                <select id="logAction" class="filter-input filter-select">
+                    <option value="">-- Tất cả --</option>
+                    <option value="Mở phòng">Mở phòng</option>
+                    <option value="Đóng phòng">Đóng phòng</option>
+                    <option value="Thanh toán">Thanh toán</option>
+                    <option value="Chuyển phòng">Chuyển phòng</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Tên nhân viên</label>
+                <input type="text" id="logEmployee" class="filter-input" placeholder="Nhập tên nhân viên...">
+            </div>
+            <div class="filter-spacer"></div>
+            <button class="btn-reset-log" onclick="resetLogFilter()">Đặt lại</button>
+            <button class="btn-apply-log" onclick="applyLogFilter()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Áp dụng
+            </button>
+        </div>
 
-<script src="js/script.js"></script>
+        <!-- Controls: badge + export -->
+        <div class="log-controls">
+            <!-- FIX 3: badge "Chỉ đọc" → màu xám trung tính, KHÔNG phải vàng -->
+            <span class="badge-readonly">Chỉ đọc</span>
+            <div class="log-controls-right">
+                <button class="btn-export-sm excel" onclick="triggerExport('Excel','nhat-ky')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Xuất Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Bảng nhật ký -->
+        <div class="table-wrap">
+            <table class="data-table" id="logTable">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th><th>Nhân viên</th>
+                        <th>Loại thao tác</th><th>Phòng</th><th>Kết quả</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyLog"></tbody>
+            </table>
+
+            <!-- Empty state: không tìm thấy dữ liệu -->
+            <div id="logEmpty" class="es-no-filter" style="display:none">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <p>Không tìm thấy dữ liệu phù hợp với bộ lọc</p>
+            </div>
+
+            <div class="pagination" id="pagesLog"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================
+     FOOTER TRẠNG THÁI
+     ================================================ -->
+<footer class="page-footer">
+    <span>Chức năng: Giám sát &amp; Báo cáo</span>
+    <span>Quyền: Quản lý</span>
+    <span>Trạng thái: Hoạt động</span>
+</footer>
+
+<!-- ================================================
+     MODAL XÁC THỰC QUYỀN TRUY CẬP
+     ================================================ -->
+<div id="authModal" class="modal-overlay-bc">
+    <div class="modal-box-bc" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+        <div class="modal-header-bc">
+            <div class="modal-header-left">
+                <div class="modal-lock-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="modal-title-bc">Xác thực quyền truy cập</h3>
+                    <p class="modal-sub-bc">Nhật ký hệ thống</p>
+                </div>
+            </div>
+            <button class="modal-close-bc" id="btnCloseAuth" aria-label="Đóng">&times;</button>
+        </div>
+
+        <div class="modal-body-bc">
+            <div id="authError" class="auth-error" style="display:none">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <span id="authErrorMsg">Mật khẩu không đúng, vui lòng thử lại.</span>
+            </div>
+
+            <p class="modal-desc-bc">Nhập mật khẩu quản lý để xem nhật ký hoạt động của hệ thống.</p>
+
+            <label class="modal-label-bc">Mật khẩu xác nhận <span class="req">*</span></label>
+            <input type="password" id="authPassword" class="modal-input-bc" placeholder="Nhập mật khẩu...">
+        </div>
+
+        <div class="modal-footer-bc">
+            <button class="btn-primary" id="btnConfirmAuth">Xác nhận</button>
+            <button class="btn-secondary" id="btnCancelAuth">Huỷ</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================
+     TOAST CONTAINER
+     ================================================ -->
+<div id="toastContainer" aria-live="polite"></div>
+
+<script src="js/baocao.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 </body>
 </html>

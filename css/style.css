@@ -764,23 +764,28 @@ td {
     padding: 18px 16px 45px 16px;
 }
 
+/* --- CẬP NHẬT TOOLBAR DỊCH VỤ GIỐNG NHÂN VIÊN --- */
 .dv-toolbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    gap: 10px; /* Cách đều các nút và ô tìm kiếm 10px */
+    margin-bottom: 20px;
 }
 
 .dv-search-box {
-    width: 370px;
-    height: 36px;
-    border: 1px solid #d8dde3;
-    border-radius: 7px;
+    flex: 1; /* Tự động giãn */
+    max-width: 320px; /* Độ dài tối đa giống bên nhân viên */
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    padding: 0 12px;
-    color: #555;
     background: #fff;
+    color: #555;
+}
+
+.dv-search-box:focus-within {
+    border-color: #3b82f6; /* Đổi màu viền xanh khi click vào tìm kiếm */
 }
 
 .dv-search-box input {
@@ -788,44 +793,48 @@ td {
     outline: none;
     flex: 1;
     margin-left: 8px;
-    font-size: 15px;
-}
-
-.dv-actions {
-    display: flex;
-    gap: 10px;
+    font-size: 14px;
 }
 
 .dv-btn {
-    border: none;
-    border-radius: 5px;
-    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 16px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s, opacity 0.15s;
 }
 
+/* Nút Thêm: Xanh dương chuẩn */
 .dv-btn-add {
-    background: #0588c9;
+    background: #3b82f6;
     color: white;
+    border-color: #3b82f6;
 }
 
 .dv-btn-add:hover {
-    background: #0077b3;
+    background: #2563eb;
 }
 
+/* Nút Sửa / Xóa: Nền trắng */
 .dv-btn-light {
     background: #fff;
-    border: 1px solid #d8dde3;
     color: #333;
 }
 
-.dv-btn-light:hover {
-    background: #f3f6f8;
+.dv-btn-light:hover:not(.dv-btn-disabled) {
+    background: #f0f0f0;
 }
 
-.dv-btn-delete {
-    background: #e53935;
-    color: white;
+/* Hiệu ứng làm mờ khi chưa chọn hàng nào */
+.dv-btn-disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .dv-table {

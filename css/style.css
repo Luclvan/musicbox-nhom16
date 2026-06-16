@@ -731,3 +731,249 @@ td {
     font-size: 11px;
     margin-right: 8px;
 }
+
+/* ================= QUẢN LÝ DỊCH VỤ ================= */
+
+.dv-page {
+    width: calc(100% - 60px);
+    min-height: calc(100vh - 105px);
+    margin: 0 30px;
+    background: #fff;
+    position: relative;
+    padding: 18px 16px 45px 16px;
+}
+
+.dv-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.dv-search-box {
+    width: 370px;
+    height: 36px;
+    border: 1px solid #d8dde3;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: #555;
+    background: #fff;
+}
+
+.dv-search-box input {
+    border: none;
+    outline: none;
+    flex: 1;
+    margin-left: 8px;
+    font-size: 15px;
+}
+
+.dv-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.dv-btn {
+    border: none;
+    border-radius: 5px;
+    padding: 9px 16px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.dv-btn-add {
+    background: #0588c9;
+    color: white;
+}
+
+.dv-btn-add:hover {
+    background: #0077b3;
+}
+
+.dv-btn-light {
+    background: #fff;
+    border: 1px solid #d8dde3;
+    color: #333;
+}
+
+.dv-btn-light:hover {
+    background: #f3f6f8;
+}
+
+.dv-btn-delete {
+    background: #e53935;
+    color: white;
+}
+
+.dv-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 16px;
+}
+
+.dv-table th {
+    background: #f8f9fb;
+    border-top: 1px solid #cfd5da;
+    border-bottom: 1px solid #cfd5da;
+    font-weight: bold;
+    padding: 7px 10px;
+    text-align: center;
+}
+
+.dv-table th:first-child {
+    border-left: 1px solid #cfd5da;
+    border-radius: 4px 0 0 4px;
+}
+
+.dv-table th:last-child {
+    border-right: 1px solid #cfd5da;
+    border-radius: 0 4px 4px 0;
+}
+
+.dv-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.dv-table tr {
+    cursor: pointer;
+}
+
+.dv-table tr.selected {
+    background: #d7f2ff;
+}
+
+.dv-status-green {
+    color: #22c55e;
+}
+
+.dv-status-orange {
+    color: #ff7a00;
+}
+
+.dv-status-red {
+    color: #ff3333;
+}
+
+.dv-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    background: #d9d9d9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+.dv-pagination {
+    display: flex;
+    gap: 6px;
+}
+
+.dv-pagination button {
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+    border: 1px solid #e1e5e8;
+    background: white;
+    cursor: pointer;
+}
+
+.dv-pagination button.active {
+    background: #0588c9;
+    color: white;
+}
+
+.dv-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.72);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.dv-modal {
+    width: 380px;
+    background: white;
+    border: 1px solid #d7dce0;
+    border-radius: 4px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    padding: 14px 16px 18px;
+}
+
+.dv-delete-box {
+    width: 380px;
+    background: white;
+    border: 1px solid #d7dce0;
+    border-radius: 4px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    padding: 18px;
+    text-align: center;
+}
+
+.dv-modal-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.dv-form-section {
+    border: 1px solid #edf0f2;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.dv-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dv-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.dv-form-row label {
+    width: 120px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.dv-form-row input,
+.dv-form-row select {
+    flex: 1;
+    height: 29px;
+    border: 1px solid #d8dde3;
+    border-radius: 4px;
+    padding: 0 9px;
+    outline: none;
+    font-size: 13px;
+}
+
+.dv-form-row input:focus,
+.dv-form-row select:focus {
+    border-color: #0588c9;
+}
+
+.dv-error {
+    color: #d32f2f;
+    font-size: 13px;
+    min-height: 18px;
+    margin: 3px 0 10px;
+}
+
+.dv-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}

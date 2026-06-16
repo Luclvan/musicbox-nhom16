@@ -3,25 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Phòng</title>
-<link rel="stylesheet" href="css/style.css">
+    <title>Dịch vụ</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
 <nav>
-    <a href="index.html" >Quản lý Phòng</a>
+    <a href="index.html">Quản lý Phòng</a>
     <a href="dichvu.html" class="active">Dịch vụ</a>
     <a href="nhanvien.html">Nhân viên</a>
     <a href="baocao.html">Giám sát & báo cáo</a>
 </nav>
 
+<div class="dv-page">
+    <div class="dv-toolbar">
+        <div class="dv-search-box">
+            <span>⌕</span>
+            <input type="text" id="dvSearch" placeholder="Tìm kiếm theo mã hoặc tên dịch vụ...">
+        </div>
 
+        <div class="dv-actions">
+            <button class="dv-btn dv-btn-add" id="btnOpenAddDv">+ Thêm dịch vụ</button>
+            <button class="dv-btn dv-btn-light" id="btnOpenEditDv">✎ Sửa</button>
+            <button class="dv-btn dv-btn-light" id="btnOpenDeleteDv">🗑️ Xoá</button>
+        </div>
+    </div>
 
+    <table class="dv-table">
+        <thead>
+            <tr>
+                <th>Mã dịch vụ</th>
+                <th>Tên dịch vụ</th>
+                <th>Loại dịch vụ</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="dvTableBody"></tbody>
+    </table>
 
+    <div class="dv-footer">
+        <span id="dvTotal">Tổng số dịch vụ: 0</span>
+        <div class="dv-pagination">
+            <button>&lt;</button>
+            <button class="active">1</button>
+            <button>&gt;</button>
+        </div>
+    </div>
+</div>
 
+<!-- MODAL THÊM / SỬA -->
+<div class="dv-modal-overlay" id="dvModal">
+    <div class="dv-modal">
+        <div class="dv-modal-title" id="dvModalTitle">Nhập thông tin dịch vụ</div>
 
+        <div class="dv-form-section">
+            <div class="dv-form-row">
+                <label>Mã dịch vụ:</label>
+                <input type="text" id="dvId">
+            </div>
 
+            <div class="dv-form-row">
+                <label>Tên dịch vụ:</label>
+                <input type="text" id="dvName">
+            </div>
 
+            <div class="dv-form-row">
+                <label>Loại dịch vụ:</label>
+                <select id="dvType">
+                    <option>Đồ uống</option>
+                    <option>Đồ ăn nhanh</option>
+                    <option>Phụ kiện</option>
+                    <option>Sự kiện</option>
+                </select>
+            </div>
 
+            <div class="dv-form-row">
+                <label>Đơn vị tính:</label>
+                <input type="text" id="dvUnit" placeholder="Chai, cái, gói...">
+            </div>
+        </div>
+
+        <div class="dv-form-section">
+            <div class="dv-form-row">
+                <label>Đơn giá (VNĐ):</label>
+                <input type="number" id="dvPrice">
+            </div>
+
+            <div class="dv-form-row">
+                <label>Số lượng:</label>
+                <input type="number" id="dvQuantity">
+            </div>
+
+            <div class="dv-form-row">
+                <label>Trạng thái:</label>
+                <select id="dvStatus">
+                    <option>Đang kinh doanh</option>
+                    <option>Hết hàng</option>
+                    <option>Tạm ngừng</option>
+                </select>
+            </div>
+        </div>
+
+        <p class="dv-error" id="dvError"></p>
+
+        <div class="dv-modal-footer">
+            <button class="dv-btn dv-btn-add" id="btnSaveDv">Lưu</button>
+            <button class="dv-btn dv-btn-light" id="btnCancelDv">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XÓA -->
+<div class="dv-modal-overlay" id="dvDeleteModal">
+    <div class="dv-delete-box">
+        <div class="dv-modal-title">Xác nhận xoá dịch vụ</div>
+        <p>Bạn có chắc chắn muốn xoá dịch vụ này không?</p>
+
+        <div class="dv-modal-footer">
+            <button class="dv-btn dv-btn-delete" id="btnConfirmDeleteDv">Xoá</button>
+            <button class="dv-btn dv-btn-light" id="btnCancelDeleteDv">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-success" id="toastMessage">
+    <div class="toast-content">
+        <div class="toast-icon">✓</div>
+        <div>
+            <div class="toast-title">Thành công</div>
+            <div class="toast-desc">Thông tin đã được lưu vào hệ thống</div>
+        </div>
+    </div>
+    <div class="toast-close">×</div>
+</div>
 
 <script src="js/script.js"></script>
 </body>

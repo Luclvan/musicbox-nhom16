@@ -1,4 +1,4 @@
-
+if (document.querySelector('.room-card')) {
         // Lấy danh sách tất cả các phòng và phần tử bảng để cập nhật
         const rooms = document.querySelectorAll('.room-card');
         const tableBody = document.getElementById('table-body');
@@ -470,3 +470,308 @@ document.getElementById('btnYesCancelCheckout').addEventListener('click', () => 
 document.getElementById('btnNoCancelCheckout').addEventListener('click', () => {
     cancelCheckoutConfirmModal.style.display = 'none';
 });
+}
+
+/* ================= QUẢN LÝ DỊCH VỤ ================= */
+
+if (document.getElementById("dvTableBody")) {
+    let services = JSON.parse(localStorage.getItem("dichVuList")) || [
+        {
+            id: "DV-001",
+            name: "Nước suối Aquafina",
+            type: "Đồ uống",
+            unit: "Chai",
+            price: 15000,
+            quantity: 42,
+            status: "Đang kinh doanh"
+        },
+        {
+            id: "DV-002",
+            name: "Thuê trống cầm tay",
+            type: "Phụ kiện",
+            unit: "Cái",
+            price: 10000,
+            quantity: 15,
+            status: "Đang kinh doanh"
+        },
+        {
+            id: "DV-003",
+            name: "Gói hạt hướng dương",
+            type: "Đồ ăn nhanh",
+            unit: "Gói",
+            price: 20000,
+            quantity: 0,
+            status: "Hết hàng"
+        },
+        {
+            id: "DV-004",
+            name: "Thuê mic",
+            type: "Phụ kiện",
+            unit: "Cái",
+            price: 20000,
+            quantity: 3,
+            status: "Đang kinh doanh"
+        },
+        {
+            id: "DV-005",
+            name: "Gói trang trí sinh nhật",
+            type: "Sự kiện",
+            unit: "Gói",
+            price: 250000,
+            quantity: 0,
+            status: "Tạm ngừng"
+        }
+    ];
+
+    let selectedIndex = 0;
+    let editingIndex = null;
+
+    const dvTableBody = document.getElementById("dvTableBody");
+    const dvSearch = document.getElementById("dvSearch");
+    const dvTotal = document.getElementById("dvTotal");
+
+    const dvModal = document.getElementById("dvModal");
+    const dvDeleteModal = document.getElementById("dvDeleteModal");
+    const dvModalTitle = document.getElementById("dvModalTitle");
+
+    const dvId = document.getElementById("dvId");
+    const dvName = document.getElementById("dvName");
+    const dvType = document.getElementById("dvType");
+    const dvUnit = document.getElementById("dvUnit");
+    const dvPrice = document.getElementById("dvPrice");
+    const dvQuantity = document.getElementById("dvQuantity");
+    const dvStatus = document.getElementById("dvStatus");
+    const dvError = document.getElementById("dvError");
+
+    function saveLocal() {
+        localStorage.setItem("dichVuList", JSON.stringify(services));
+    }
+
+    function formatMoney(value) {
+        return Number(value).toLocaleString("vi-VN") + " đ";
+    }
+
+    function getStatusClass(status) {
+        if (status === "Đang kinh doanh") return "dv-status-green";
+        if (status === "Hết hàng") return "dv-status-orange";
+        return "dv-status-red";
+    }
+
+    function renderServices() {
+        const keyword = dvSearch.value.trim().toLowerCase();
+
+        const filtered = services.filter(s =>
+            s.id.toLowerCase().includes(keyword) ||
+            s.name.toLowerCase().includes(keyword)
+        );
+
+        dvTableBody.innerHTML = "";
+
+        filtered.forEach((s) => {
+            const realIndex = services.indexOf(s);
+
+            const tr = document.createElement("tr");
+            if (realIndex === selectedIndex) tr.classList.add("selected");
+
+            tr.innerHTML = `
+                <td>${s.id}</td>
+                <td>${s.name}</td>
+                <td>${s.type}</td>
+                <td>${formatMoney(s.price)}</td>
+                <td>${s.quantity}</td>
+                <td class="${getStatusClass(s.status)}">${s.status}</td>
+            `;
+
+            tr.addEventListener("click", function () {
+                selectedIndex = realIndex;
+                renderServices();
+            });
+
+            dvTableBody.appendChild(tr);
+        });
+
+        dvTotal.textContent = "Tổng số dịch vụ: " + filtered.length;
+        saveLocal();
+    }
+
+    function resetForm() {
+        dvId.value = "";
+        dvName.value = "";
+        dvType.value = "Đồ uống";
+        dvUnit.value = "";
+        dvPrice.value = "";
+        dvQuantity.value = "";
+        dvStatus.value = "Đang kinh doanh";
+        dvError.textContent = "";
+        dvId.disabled = false;
+    }
+
+    function openAddModal() {
+        editingIndex = null;
+        resetForm();
+        dvModalTitle.textContent = "Nhập thông tin dịch vụ";
+        document.getElementById("btnSaveDv").textContent = "Lưu";
+        dvModal.style.display = "flex";
+    }
+
+    function openEditModal() {
+        if (selectedIndex === null || !services[selectedIndex]) {
+            alert("Vui lòng chọn dịch vụ cần sửa");
+            return;
+        }
+
+        editingIndex = selectedIndex;
+        const s = services[selectedIndex];
+
+        dvModalTitle.textContent = "Sửa thông tin dịch vụ";
+        document.getElementById("btnSaveDv").textContent = "Cập nhật";
+
+        dvId.value = s.id;
+        dvName.value = s.name;
+        dvType.value = s.type;
+        dvUnit.value = s.unit;
+        dvPrice.value = s.price;
+        dvQuantity.value = s.quantity;
+        dvStatus.value = s.status;
+
+        dvId.disabled = true;
+        dvError.textContent = "";
+        dvModal.style.display = "flex";
+    }
+
+    function validateForm() {
+        const id = dvId.value.trim();
+        const name = dvName.value.trim();
+        const unit = dvUnit.value.trim();
+        const price = Number(dvPrice.value);
+        const quantity = Number(dvQuantity.value);
+
+        if (id === "") {
+            dvError.textContent = "Mã dịch vụ không hợp lệ";
+            dvId.focus();
+            return false;
+        }
+
+        if (editingIndex === null && services.some(s => s.id === id)) {
+            dvError.textContent = "Mã dịch vụ đã tồn tại";
+            dvId.focus();
+            return false;
+        }
+
+        if (name === "") {
+            dvError.textContent = "Tên dịch vụ không hợp lệ";
+            dvName.focus();
+            return false;
+        }
+
+        if (unit === "") {
+            dvError.textContent = "Đơn vị tính không được để trống";
+            dvUnit.focus();
+            return false;
+        }
+
+        if (price <= 0 || isNaN(price)) {
+            dvError.textContent = "Đơn giá không hợp lệ";
+            dvPrice.focus();
+            return false;
+        }
+
+        if (quantity < 0 || isNaN(quantity)) {
+            dvError.textContent = "Số lượng không hợp lệ";
+            dvQuantity.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function saveService() {
+        if (!validateForm()) return;
+
+        const service = {
+            id: dvId.value.trim(),
+            name: dvName.value.trim(),
+            type: dvType.value,
+            unit: dvUnit.value.trim(),
+            price: Number(dvPrice.value),
+            quantity: Number(dvQuantity.value),
+            status: dvStatus.value
+        };
+
+        if (service.quantity === 0 && service.status === "Đang kinh doanh") {
+            service.status = "Hết hàng";
+        }
+
+        if (editingIndex === null) {
+            services.push(service);
+            selectedIndex = services.length - 1;
+            showToastDv("Thêm dịch vụ thành công!", "Thông tin đã được lưu vào hệ thống");
+        } else {
+            services[editingIndex] = service;
+            selectedIndex = editingIndex;
+            showToastDv("Cập nhật dịch vụ thành công!", "Thông tin đã được lưu vào hệ thống");
+        }
+
+        dvModal.style.display = "none";
+        renderServices();
+    }
+
+    function deleteService() {
+        if (selectedIndex === null || !services[selectedIndex]) {
+            alert("Vui lòng chọn dịch vụ cần xoá");
+            return;
+        }
+
+        dvDeleteModal.style.display = "flex";
+    }
+
+    function confirmDeleteService() {
+        services.splice(selectedIndex, 1);
+
+        if (services.length === 0) {
+            selectedIndex = null;
+        } else if (selectedIndex >= services.length) {
+            selectedIndex = services.length - 1;
+        }
+
+        dvDeleteModal.style.display = "none";
+        renderServices();
+        showToastDv("Xóa dịch vụ thành công!", "Thông tin đã được cập nhật");
+    }
+
+    function showToastDv(title, desc) {
+        const toast = document.getElementById("toastMessage");
+        if (!toast) return;
+
+        toast.querySelector(".toast-title").textContent = title;
+        toast.querySelector(".toast-desc").textContent = desc;
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+    document.getElementById("btnOpenAddDv").addEventListener("click", openAddModal);
+    document.getElementById("btnOpenEditDv").addEventListener("click", openEditModal);
+    document.getElementById("btnOpenDeleteDv").addEventListener("click", deleteService);
+
+    document.getElementById("btnSaveDv").addEventListener("click", saveService);
+    document.getElementById("btnCancelDv").addEventListener("click", function () {
+        dvModal.style.display = "none";
+    });
+
+    document.getElementById("btnConfirmDeleteDv").addEventListener("click", confirmDeleteService);
+    document.getElementById("btnCancelDeleteDv").addEventListener("click", function () {
+        dvDeleteModal.style.display = "none";
+    });
+
+    dvSearch.addEventListener("input", renderServices);
+
+    document.querySelector(".toast-close").addEventListener("click", function () {
+        document.getElementById("toastMessage").classList.remove("show");
+    });
+
+    renderServices();
+}

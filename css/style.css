@@ -369,6 +369,18 @@ td {
 }
 
 /* Footer & Nút bấm */
+.page-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 48px;
+  padding: 14px 44px;
+  font-size: 12.5px;
+  color: #64748b; /* text-3 */
+  margin-top: auto;
+  background: #F8FAFC;
+  border-top: 1px solid #e2e8f0;
+}
+
 /* --- SỬA LẠI CHÂN POPUP (ÁP DỤNG CHO TẤT CẢ CÁC POPUP) --- */
 .modal-footer {
     display: flex;

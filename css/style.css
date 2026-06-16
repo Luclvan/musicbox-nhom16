@@ -39,12 +39,12 @@ nav a.active {
 
 /* --- MAIN CONTAINER --- */
 .container {
-    width: auto; /* Bỏ giới hạn chiều rộng */
-    margin: 0 20px; /* Cách hai bên mép màn hình 20px, phần giữa tự động giãn hết cỡ */
+    width: auto;
+    margin: 0 20px;
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
-    flex: 1;
+    /* Đã xoá flex: 1; để không bị khoảng trống khổng lồ đẩy footer xuống */
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
 }
 
@@ -163,13 +163,23 @@ nav a.active {
 }
 
 /* --- FOOTER TABLE --- */
+/* --- SỬA LỖI KHUNG CONTAINER VÀ BẢNG FOOTER --- */
+
 .footer-table-container {
     width: auto;
-    margin: 20px 20px; /* Bảng tự giãn theo kích thước màn hình giống như khung ở trên */
+    margin: 20px 20px 40px 20px; /* Cách đều và cách đáy trang 40px */
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+/* Ép nội dung bảng chân trang căn giữa tuyệt đối */
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px 15px; 
+    vertical-align: middle !important; /* Bắt buộc căn giữa theo chiều dọc */
+    text-align: center;
 }
 
 table {
@@ -178,10 +188,6 @@ table {
     text-align: center;
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 15px;
-}
 
 th {
     background-color: #E7EEF2;

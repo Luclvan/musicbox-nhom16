@@ -3,25 +3,816 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Phòng</title>
-<link rel="stylesheet" href="css/style.css">
+    <title>Quản lý Nhân viên</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #E7EEF2; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+
+        nav { background-color: #fff; display: flex; justify-content: center; padding-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        nav a { text-decoration: none; color: #333; font-size: 18px; padding: 10px 20px; margin: 0 10px; font-weight: 500; }
+        nav a.active { color: #3b82f6; border-bottom: 4px solid #3b82f6; }
+
+        .container { margin: 0 20px; background-color: #fff; border-radius: 10px; padding: 20px; flex: 1; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+
+        /* Toolbar */
+        .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .btn-toolbar { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 14px; font-weight: 500; color: #333; transition: opacity 0.15s; }
+        .btn-toolbar:hover:not(.btn-disabled) { background: #f0f0f0; }
+        .btn-toolbar.btn-add { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+        .btn-toolbar.btn-add:hover { background: #2563eb; }
+        .btn-toolbar.btn-attendance-view { background: #3b82f6; color: #fff; border-color: #3b82f6; margin-left: auto; }
+        .btn-toolbar.btn-attendance-view:hover { background: #2563eb; }
+        .btn-toolbar.btn-disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
+        .search-input { flex: 1; padding: 8px 14px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; max-width: 320px; }
+        .search-input:focus { border-color: #3b82f6; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { border: 1px solid #ddd; padding: 12px 15px; }
+        th { background-color: #E7EEF2; font-weight: 600; color: #333; text-align: center; }
+        td { color: #555; }
+        tbody tr { cursor: pointer; transition: background 0.15s; }
+        tbody tr:hover { background: #f5faff; }
+        tbody tr.selected { background: #dbeafe !important; }
+
+        /* Badge chức vụ - đơn giản, chỉ màu chữ */
+        .badge { display: inline; font-size: 13px; font-weight: 500; }
+        .badge-phucvu { color: #3b82f6; }
+        .badge-letan { color: #06b6d4; }
+        .badge-quanly { color: #8b5cf6; }
+        .badge-admin { color: #374151; }
+
+        /* Trạng thái - chỉ text, không viền */
+        .status-badge { font-size: 13px; font-weight: 500; }
+        .status-on { color: #16a34a; }
+        .status-off { color: #555; }
+        .status-trong-ca { color: #16a34a; }
+
+        /* Pagination */
+        .pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 13px; color: #777; }
+        .pagination-controls { display: flex; align-items: center; gap: 10px; }
+        .btn-page { padding: 5px 14px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; }
+        .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-info { font-size: 13px; }
+
+        /* Footer stats */
+        .footer-stats { background: #fff; border-top: 1px solid #eee; padding: 10px 20px; display: flex; gap: 30px; font-size: 13px; color: #555; margin-top: auto; }
+        .footer-stats span { font-weight: 600; color: #333; }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); width: 700px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid #eee; }
+        .modal-header h3 { font-size: 17px; color: #1d4ed8; font-weight: 600; }
+        .modal-body { padding: 24px 24px 10px; }
+        .modal-footer { display: flex; justify-content: flex-start; gap: 12px; padding: 16px 24px; border-top: 1px solid #eee; }
+
+        /* Form grid */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 14px; color: #333; font-weight: 500; }
+        .form-group label .req { color: red; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; width: 100%;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #3b82f6; }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+        .form-group input.error, .form-group select.error { border-color: #ef4444; background: #fff5f5; }
+        .field-error { font-size: 12px; color: #ef4444; display: none; }
+        .field-error.show { display: block; }
+        .form-group input[readonly], .form-group input:disabled { background: #f5f5f5; color: #888; cursor: not-allowed; }
+
+        /* Error banner */
+        .error-banner { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; border-radius: 6px; padding: 10px 16px; margin-bottom: 16px; font-size: 14px; display: none; align-items: center; gap: 8px; }
+        .error-banner.show { display: flex; }
+
+        /* Buttons */
+        .btn-primary { background: #3b82f6; color: #fff; border: none; padding: 9px 22px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-secondary { background: #fff; color: #333; border: 1px solid #ccc; padding: 9px 22px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-secondary:hover { background: #f5f5f5; }
+        .btn-danger { background: #ef4444; color: #fff; border: none; padding: 9px 22px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* ===== DELETE CONFIRM MODAL ===== */
+        .confirm-box { background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); width: 420px; max-width: 95vw; padding: 30px; text-align: center; }
+        .confirm-icon { font-size: 44px; color: #f59e0b; margin-bottom: 14px; }
+        .confirm-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .confirm-box p { font-size: 14px; color: #666; margin-bottom: 24px; }
+        .confirm-buttons { display: flex; gap: 12px; justify-content: center; }
+
+        /* ===== TOAST ===== */
+        .toast { position: fixed; top: 20px; right: -420px; background: #22c55e; color: #fff; padding: 14px 18px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); width: 360px; z-index: 9999; transition: right 0.4s cubic-bezier(0.175,0.885,0.32,1.275); display: flex; align-items: flex-start; gap: 12px; }
+        .toast.error { background: #ef4444; }
+        .toast.show { right: 20px; }
+        .toast-icon { background: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+        .toast-icon.green { color: #22c55e; }
+        .toast-icon.red { color: #ef4444; }
+        .toast-body { flex: 1; }
+        .toast-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+        .toast-desc { font-size: 12px; opacity: 0.9; }
+        .toast-close { cursor: pointer; font-size: 18px; opacity: 0.8; }
+
+        /* ===== ATTENDANCE TABLE VIEW ===== */
+        #attendanceView { display: none; }
+        #employeeView { display: block; }
+        .section-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: #333; margin-bottom: 16px; }
+        .status-tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .tag-ontime { background: #dcfce7; color: #16a34a; }
+        .tag-late { background: #fef9c3; color: #b45309; }
+        .tag-early { background: #fee2e2; color: #dc2626; }
+
+        /* Chấm công modal */
+        .modal-box.chamcong-modal { width: 420px; }
+        .chamcong-field { margin-bottom: 16px; }
+        .chamcong-field label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 5px; }
+        .chamcong-field input, .chamcong-field select { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
+        .chamcong-field input.error { border-color: #ef4444; background: #fff5f5; }
+        .chamcong-field input[readonly] { background: #f5f5f5; color: #888; cursor: not-allowed; }
+
+        .attendance-stats { margin-top: 16px; font-size: 13px; color: #555; }
+        .attendance-stats b { font-weight: 600; }
+        .att-green { color: #16a34a; }
+        .att-yellow { color: #b45309; }
+        .att-red { color: #dc2626; }
+
+        td.center { text-align: center; }
+    </style>
 </head>
 <body>
+
 <nav>
-    <a href="index.html" >Quản lý Phòng</a>
+    <a href="index.html">Quản lý Phòng</a>
     <a href="dichvu.html">Dịch vụ</a>
     <a href="nhanvien.html" class="active">Nhân viên</a>
     <a href="baocao.html">Giám sát & báo cáo</a>
 </nav>
 
-    
+<div class="container">
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <button class="btn-toolbar btn-add" onclick="openAddModal()">+ Thêm mới</button>
+        <button class="btn-toolbar btn-disabled" id="btnSua" onclick="openEditModal()">&#9998; Sửa</button>
+        <button class="btn-toolbar btn-disabled" id="btnXoa" onclick="openDeleteConfirm()">&#128465; Xóa</button>
+        <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm theo Mã nhân viên hoặc Tên nhân viên" oninput="filterTable()">
+        <button class="btn-toolbar btn-attendance-view" id="btnToggleView" onclick="toggleView()">Bảng chấm công</button>
+    </div>
 
+    <!-- EMPLOYEE VIEW -->
+    <div id="employeeView">
+        <table id="employeeTable">
+            <thead>
+                <tr>
+                    <th>Mã NV</th>
+                    <th>Họ và tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Chức vụ</th>
+                    <th>Email</th>
+                    <th>Ghi chú</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody id="employeeBody"></tbody>
+        </table>
+        <div class="pagination-bar">
+            <div id="pageInfo">Hiển thị 1-5 / 5 nhân viên</div>
+            <div class="pagination-controls">
+                <button class="btn-page" id="btnPrev" onclick="changePage(-1)" disabled>◀ Trước</button>
+                <span class="page-info" id="pageNum">1/1</span>
+                <button class="btn-page" id="btnNext" onclick="changePage(1)" disabled>Sau ▶</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- ATTENDANCE VIEW -->
+    <div id="attendanceView">
+        <div class="section-title">📋 Danh Sách Chấm Công</div>
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mã NV</th>
+                    <th>Tên Nhân Viên</th>
+                    <th>Ca Làm</th>
+                    <th>Giờ Vào</th>
+                    <th>Giờ Ra</th>
+                    <th>Ngày</th>
+                    <th>Trạng Thái</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody"></tbody>
+        </table>
+        <div class="attendance-stats" id="attendanceStats"></div>
+    </div>
+</div>
 
+<!-- FOOTER STATS -->
+<div class="footer-stats">
+    <div>Số thành viên: <span id="statTotal">5</span></div>
+    <div>Nhân viên trong ca: <span id="statOnDuty">1</span></div>
+    <div>Tỉ lệ: <span id="statRatio">20%</span></div>
+</div>
 
+<!-- ===== ADD MODAL ===== -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-box">
+        <div class="modal-header"><h3>👤 Thêm nhân viên mới</h3></div>
+        <div class="modal-body">
+            <div class="error-banner" id="addErrorBanner">⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Mã nhân viên <span class="req">*</span></label>
+                    <input type="text" id="add_maNV" placeholder="Nhập mã nhân viên...">
+                    <span class="field-error" id="err_add_maNV">Vui lòng nhập mã nhân viên</span>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu <span class="req">*</span></label>
+                    <input type="password" id="add_matKhau" placeholder="Nhập mật khẩu...">
+                    <span class="field-error" id="err_add_matKhau">Vui lòng nhập mật khẩu</span>
+                </div>
+                <div class="form-group">
+                    <label>Tên nhân viên <span class="req">*</span></label>
+                    <input type="text" id="add_tenNV" placeholder="Nhập tên nhân viên...">
+                    <span class="field-error" id="err_add_tenNV">Vui lòng nhập tên nhân viên</span>
+                </div>
+                <div class="form-group">
+                    <label>Chức vụ <span class="req">*</span></label>
+                    <select id="add_chucVu">
+                        <option value="">-- Chọn chức vụ --</option>
+                        <option value="Phục vụ">Phục vụ</option>
+                        <option value="Lễ Tân">Lễ Tân</option>
+                        <option value="Quản lý">Quản lý</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <span class="field-error" id="err_add_chucVu">Vui lòng chọn chức vụ</span>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại <span class="req">*</span></label>
+                    <input type="text" id="add_sdt" placeholder="Nhập số điện thoại...">
+                    <span class="field-error" id="err_add_sdt">Vui lòng nhập số điện thoại</span>
+                </div>
+                <div class="form-group">
+                    <label>Email <span class="req">*</span></label>
+                    <input type="email" id="add_email" placeholder="Nhập Email">
+                    <span class="field-error" id="err_add_email">Vui lòng nhập email hợp lệ</span>
+                </div>
+                <div class="form-group full-width">
+                    <label>CCCD <span class="req">*</span></label>
+                    <input type="text" id="add_cccd" placeholder="Nhập số CCCD...">
+                    <span class="field-error" id="err_add_cccd">Vui lòng nhập CCCD</span>
+                </div>
+                <div class="form-group full-width">
+                    <label>Địa chỉ</label>
+                    <input type="text" id="add_diaChi" placeholder="Nhập địa chỉ...">
+                </div>
+                <div class="form-group full-width">
+                    <label>Ghi chú</label>
+                    <textarea id="add_ghiChu" placeholder="Nhập ghi chú..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-primary" onclick="submitAdd()">👤 Thêm nhân viên mới</button>
+            <button class="btn-secondary" onclick="closeModal('addModal')">Hủy bỏ</button>
+        </div>
+    </div>
+</div>
 
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header"><h3>✏️ Sửa nhân viên</h3></div>
+        <div class="modal-body">
+            <div class="error-banner" id="editErrorBanner">⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Mã nhân viên</label>
+                    <input type="text" id="edit_maNV" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu <span class="req">*</span></label>
+                    <input type="password" id="edit_matKhau" placeholder="Nhập mật khẩu...">
+                    <span class="field-error" id="err_edit_matKhau">Vui lòng nhập mật khẩu</span>
+                </div>
+                <div class="form-group">
+                    <label>Tên nhân viên <span class="req">*</span></label>
+                    <input type="text" id="edit_tenNV" placeholder="Nhập tên nhân viên...">
+                    <span class="field-error" id="err_edit_tenNV">Vui lòng nhập tên nhân viên</span>
+                </div>
+                <div class="form-group">
+                    <label>Chức vụ <span class="req">*</span></label>
+                    <select id="edit_chucVu">
+                        <option value="">-- Chọn chức vụ --</option>
+                        <option value="Phục vụ">Phục vụ</option>
+                        <option value="Lễ Tân">Lễ Tân</option>
+                        <option value="Quản lý">Quản lý</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <span class="field-error" id="err_edit_chucVu">Vui lòng chọn chức vụ</span>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại <span class="req">*</span></label>
+                    <input type="text" id="edit_sdt" placeholder="Nhập số điện thoại...">
+                    <span class="field-error" id="err_edit_sdt">Vui lòng nhập số điện thoại</span>
+                </div>
+                <div class="form-group">
+                    <label>Email <span class="req">*</span></label>
+                    <input type="email" id="edit_email" placeholder="Nhập Email">
+                    <span class="field-error" id="err_edit_email">Vui lòng nhập email hợp lệ</span>
+                </div>
+                <div class="form-group full-width">
+                    <label>CCCD <span class="req">*</span></label>
+                    <input type="text" id="edit_cccd" placeholder="Nhập số CCCD...">
+                    <span class="field-error" id="err_edit_cccd">Vui lòng nhập CCCD</span>
+                </div>
+                <div class="form-group full-width">
+                    <label>Địa chỉ</label>
+                    <input type="text" id="edit_diaChi" placeholder="Nhập địa chỉ...">
+                </div>
+                <div class="form-group full-width">
+                    <label>Ghi chú</label>
+                    <textarea id="edit_ghiChu" placeholder="Nhập ghi chú..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-primary" onclick="submitEdit()">💾 Lưu thay đổi</button>
+            <button class="btn-secondary" onclick="closeModal('editModal')">Hủy bỏ</button>
+        </div>
+    </div>
+</div>
 
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="confirm-box">
+        <div class="confirm-icon">⚠️</div>
+        <h3>Xác nhận xóa nhân viên</h3>
+        <p>Bạn có chắc chắn muốn xóa nhân viên không?<br>Hành động này không thể hoàn tác.</p>
+        <div class="confirm-buttons">
+            <button class="btn-secondary" onclick="closeModal('deleteModal')">Hủy bỏ</button>
+            <button class="btn-danger" onclick="confirmDelete()">Xác nhận xóa</button>
+        </div>
+    </div>
+</div>
 
-<script src="js/script.js"></script>
+<!-- ===== CHẤM CÔNG MODAL ===== -->
+<div class="modal-overlay" id="chamCongModal">
+    <div class="modal-box chamcong-modal">
+        <div class="modal-header"><h3>👤 Chấm Công</h3></div>
+        <div class="modal-body">
+            <div class="error-banner" id="ccErrorBanner">⚠️ Vui lòng nhập đầy đủ và đúng định dạng</div>
+            <div class="chamcong-field">
+                <label>Mã Nhân Viên</label>
+                <input type="text" id="cc_maNV" readonly>
+            </div>
+            <div class="chamcong-field">
+                <label>Tên Nhân Viên</label>
+                <input type="text" id="cc_tenNV" readonly>
+            </div>
+            <div class="chamcong-field">
+                <label>Ca Làm <span style="color:red">*</span></label>
+                <select id="cc_caLam">
+                    <option value="">-- Chọn ca --</option>
+                    <option value="Ca sáng (7:00 - 12:00)">Ca sáng (7:00 - 12:00)</option>
+                    <option value="Ca chiều (12:00 - 17:00)">Ca chiều (12:00 - 17:00)</option>
+                    <option value="Ca tối (17:00 - 22:00)">Ca tối (17:00 - 22:00)</option>
+                    <option value="Ca full (9:00 - 18:00)">Ca full (9:00 - 18:00)</option>
+                    <option value="Ca chiều (16:00 - 23:00)">Ca chiều (16:00 - 23:00)</option>
+                    <option value="Ca chiều (19:00 - 16:00)">Ca chiều (19:00 - 16:00)</option>
+                </select>
+            </div>
+            <div class="chamcong-field">
+                <label>⏱ Giờ Vào <span style="color:red">*</span> (HH:MM)</label>
+                <input type="text" id="cc_gioVao" placeholder="VD: 8:00">
+            </div>
+            <div class="chamcong-field">
+                <label>⏱ Giờ Ra <span style="color:red">*</span> (HH:MM)</label>
+                <input type="text" id="cc_gioRa" placeholder="VD: 17:00">
+            </div>
+            <div class="chamcong-field">
+                <label>Ngày <span style="color:red">*</span></label>
+                <input type="date" id="cc_ngay">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-primary" onclick="submitChamCong()">+ Chấm Công</button>
+            <button class="btn-secondary" onclick="closeModal('chamCongModal')">Hủy bỏ</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+    <div class="toast-icon" id="toastIcon">✓</div>
+    <div class="toast-body">
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-desc" id="toastDesc"></div>
+    </div>
+    <div class="toast-close" onclick="hideToast()">✕</div>
+</div>
+
+<script>
+// ===== DATA =====
+let employees = [
+    { maNV: 'NV001', tenNV: 'Bùi Mạnh Đức', sdt: '0904567890', chucVu: 'Phục vụ', email: 'duc@musicbox.vn', ghiChu: 'Ca ngày', trangThai: 'Off', matKhau: 'pass123', cccd: '001234567890', diaChi: 'Hà Nội' },
+    { maNV: 'NV002', tenNV: 'Lê Văn Lục',   sdt: '0942323512', chucVu: 'Lễ Tân',  email: 'lucc@musicbox.vn', ghiChu: 'Trainning', trangThai: 'Trong ca', matKhau: 'pass456', cccd: '001234567891', diaChi: 'Hà Nội' },
+    { maNV: 'NV003', tenNV: 'Phạm Thị Dung', sdt: '0993231233', chucVu: 'Quản lý', email: 'dung@musicbox.vn', ghiChu: 'Fulltime', trangThai: 'Off', matKhau: 'pass789', cccd: '001234567892', diaChi: 'Hà Nội' },
+    { maNV: 'NV004', tenNV: 'Hoàng Mai Tâm', sdt: '0998313233', chucVu: 'Admin',   email: 'hmtmt0505@musicbox.vn', ghiChu: '', trangThai: 'Off', matKhau: 'passabc', cccd: '001234567893', diaChi: 'Hà Nội' },
+];
+
+let attendanceRecords = [
+    { maNV: 'NV002', tenNV: 'Lê Văn Lục',   caLam: 'Ca chiều (16:00 - 23:00)', gioVao: '16:15', gioRa: '23:10', ngay: '4/6/2026', trangThai: 'Trễ' },
+    { maNV: 'NV001', tenNV: 'Bùi Mạnh Đức', caLam: 'Ca chiều (19:00 - 16:00)', gioVao: '08:58', gioRa: '16:03', ngay: '4/6/2026', trangThai: 'Đúng giờ' },
+];
+
+let selectedIndex = -1; // index in filtered list
+let currentPage = 1;
+const rowsPerPage = 10;
+let filteredEmployees = [...employees];
+let inAttendanceView = false;
+
+// ===== RENDER EMPLOYEES =====
+function getBadgeClass(chucVu) {
+    const map = { 'Phục vụ': 'badge-phucvu', 'Lễ Tân': 'badge-letan', 'Quản lý': 'badge-quanly', 'Admin': 'badge-admin' };
+    return map[chucVu] || 'badge-phucvu';
+}
+
+function renderEmployees() {
+    const tbody = document.getElementById('employeeBody');
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = filteredEmployees.slice(start, end);
+    const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / rowsPerPage));
+
+    tbody.innerHTML = pageData.map((e, i) => {
+        const globalIdx = employees.indexOf(e);
+        const isSelected = employees[selectedIndex] === e;
+        const statusClass = e.trangThai === 'Trong ca' ? 'status-on' : 'status-off';
+        return `<tr class="${isSelected ? 'selected' : ''}" 
+                    onclick="selectEmployee(${globalIdx}, event)" 
+                    ondblclick="openChamCong(${globalIdx}, event)">
+            <td>${e.maNV}</td>
+            <td>${e.tenNV}</td>
+            <td>${e.sdt}</td>
+            <td><span class="badge ${getBadgeClass(e.chucVu)}">${e.chucVu}</span></td>
+            <td>${e.email}</td>
+            <td>${e.ghiChu}</td>
+            <td class="center"><span class="status-badge ${statusClass}">${e.trangThai}</span></td>
+        </tr>`;
+    }).join('');
+
+    // Pagination
+    document.getElementById('pageInfo').textContent = `Hiển thị ${Math.min(start+1, filteredEmployees.length)}-${Math.min(end, filteredEmployees.length)} / ${filteredEmployees.length} nhân viên`;
+    document.getElementById('pageNum').textContent = `${currentPage}/${totalPages}`;
+    document.getElementById('btnPrev').disabled = currentPage <= 1;
+    document.getElementById('btnNext').disabled = currentPage >= totalPages;
+
+    updateStats();
+}
+
+function updateStats() {
+    document.getElementById('statTotal').textContent = employees.length;
+    const onDuty = employees.filter(e => e.trangThai === 'Trong ca').length;
+    document.getElementById('statOnDuty').textContent = onDuty;
+    const ratio = employees.length > 0 ? Math.round((onDuty / employees.length) * 100) : 0;
+    document.getElementById('statRatio').textContent = ratio + '%';
+}
+
+function filterTable() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    filteredEmployees = employees.filter(e =>
+        e.maNV.toLowerCase().includes(q) || e.tenNV.toLowerCase().includes(q)
+    );
+    currentPage = 1;
+    selectedIndex = -1;
+    hideSuaXoa();
+    renderEmployees();
+}
+
+function changePage(dir) {
+    currentPage += dir;
+    renderEmployees();
+}
+
+function selectEmployee(idx, ev) {
+    ev.stopPropagation(); // Ngăn sự kiện nổi bọt lên document
+    if (selectedIndex === idx) {
+        selectedIndex = -1;
+        hideSuaXoa();
+    } else {
+        selectedIndex = idx;
+        showSuaXoa();
+    }
+    renderEmployees();
+}
+
+function showSuaXoa() {
+    document.getElementById('btnSua').classList.remove('btn-disabled');
+    document.getElementById('btnXoa').classList.remove('btn-disabled');
+}
+function hideSuaXoa() {
+    document.getElementById('btnSua').classList.add('btn-disabled');
+    document.getElementById('btnXoa').classList.add('btn-disabled');
+}
+
+// Click outside table to deselect
+document.addEventListener('click', function(e) {
+    const table = document.getElementById('employeeTable');
+    const toolbar = document.querySelector('.toolbar');
+    // Chỉ bỏ chọn khi click ra ngoài cả bảng lẫn toolbar
+    if (table && !table.contains(e.target) && toolbar && !toolbar.contains(e.target)) {
+        if (selectedIndex !== -1) {
+            selectedIndex = -1;
+            hideSuaXoa();
+            renderEmployees();
+        }
+    }
+});
+
+// ===== MODAL HELPERS =====
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ===== ADD =====
+function openAddModal() {
+    clearForm('add');
+    document.getElementById('addErrorBanner').classList.remove('show');
+    openModal('addModal');
+}
+
+function clearForm(prefix) {
+    const fields = ['maNV','matKhau','tenNV','chucVu','sdt','email','cccd','diaChi','ghiChu'];
+    fields.forEach(f => {
+        const el = document.getElementById(`${prefix}_${f}`);
+        if (!el) return;
+        if (el.tagName === 'SELECT') el.value = '';
+        else el.value = '';
+        el.classList.remove('error');
+    });
+    document.querySelectorAll(`[id^="err_${prefix}_"]`).forEach(el => el.classList.remove('show'));
+}
+
+function validateForm(prefix, excludeFields = []) {
+    const required = ['matKhau','tenNV','chucVu','sdt','email','cccd'];
+    if (prefix === 'add') required.unshift('maNV');
+    let valid = true;
+    required.forEach(f => {
+        if (excludeFields.includes(f)) return;
+        const el = document.getElementById(`${prefix}_${f}`);
+        const err = document.getElementById(`err_${prefix}_${f}`);
+        if (!el) return;
+        const val = el.value.trim();
+        let fieldValid = val !== '';
+        if (f === 'email' && val !== '') {
+            fieldValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        }
+        if (!fieldValid) {
+            el.classList.add('error');
+            if (err) err.classList.add('show');
+            valid = false;
+        } else {
+            el.classList.remove('error');
+            if (err) err.classList.remove('show');
+        }
+    });
+    return valid;
+}
+
+function submitAdd() {
+    if (!validateForm('add')) {
+        document.getElementById('addErrorBanner').classList.add('show');
+        return;
+    }
+    document.getElementById('addErrorBanner').classList.remove('show');
+
+    // Check duplicate maNV
+    const maNV = document.getElementById('add_maNV').value.trim();
+    if (employees.find(e => e.maNV === maNV)) {
+        document.getElementById('add_maNV').classList.add('error');
+        document.getElementById('err_add_maNV').textContent = 'Mã nhân viên đã tồn tại';
+        document.getElementById('err_add_maNV').classList.add('show');
+        document.getElementById('addErrorBanner').classList.add('show');
+        return;
+    }
+
+    const newEmp = {
+        maNV,
+        tenNV: document.getElementById('add_tenNV').value.trim(),
+        sdt: document.getElementById('add_sdt').value.trim(),
+        chucVu: document.getElementById('add_chucVu').value,
+        email: document.getElementById('add_email').value.trim(),
+        ghiChu: document.getElementById('add_ghiChu').value.trim(),
+        trangThai: 'Off',
+        matKhau: document.getElementById('add_matKhau').value,
+        cccd: document.getElementById('add_cccd').value.trim(),
+        diaChi: document.getElementById('add_diaChi').value.trim(),
+    };
+    employees.push(newEmp);
+    filteredEmployees = [...employees];
+    closeModal('addModal');
+    renderEmployees();
+    showToast('✓', 'Thêm nhân viên thành công!', 'Thông tin đã được lưu vào hệ thống', false);
+}
+
+// ===== EDIT =====
+let editingIndex = -1; // Lưu index đang sửa, tránh bị reset khi click ra ngoài
+
+function openEditModal() {
+    if (selectedIndex < 0) return;
+    editingIndex = selectedIndex; // snapshot lại index
+    const e = employees[editingIndex];
+    document.getElementById('edit_maNV').value = e.maNV;
+    document.getElementById('edit_matKhau').value = e.matKhau;
+    document.getElementById('edit_tenNV').value = e.tenNV;
+    document.getElementById('edit_chucVu').value = e.chucVu;
+    document.getElementById('edit_sdt').value = e.sdt;
+    document.getElementById('edit_email').value = e.email;
+    document.getElementById('edit_cccd').value = e.cccd;
+    document.getElementById('edit_diaChi').value = e.diaChi || '';
+    document.getElementById('edit_ghiChu').value = e.ghiChu || '';
+    document.getElementById('editErrorBanner').classList.remove('show');
+    document.querySelectorAll('[id^="err_edit_"]').forEach(el => el.classList.remove('show'));
+    ['matKhau','tenNV','chucVu','sdt','email','cccd'].forEach(f => {
+        const el = document.getElementById('edit_' + f);
+        if (el) el.classList.remove('error');
+    });
+    openModal('editModal');
+}
+
+function submitEdit() {
+    if (!validateForm('edit')) {
+        document.getElementById('editErrorBanner').classList.add('show');
+        return;
+    }
+    document.getElementById('editErrorBanner').classList.remove('show');
+    if (editingIndex < 0 || editingIndex >= employees.length) return;
+    const e = employees[editingIndex];
+    e.matKhau = document.getElementById('edit_matKhau').value;
+    e.tenNV = document.getElementById('edit_tenNV').value.trim();
+    e.chucVu = document.getElementById('edit_chucVu').value;
+    e.sdt = document.getElementById('edit_sdt').value.trim();
+    e.email = document.getElementById('edit_email').value.trim();
+    e.cccd = document.getElementById('edit_cccd').value.trim();
+    e.diaChi = document.getElementById('edit_diaChi').value.trim();
+    e.ghiChu = document.getElementById('edit_ghiChu').value.trim();
+    filteredEmployees = [...employees];
+    closeModal('editModal');
+    renderEmployees();
+    showToast('✓', 'Cập nhật nhân viên thành công!', 'Thông tin đã được lưu vào hệ thống', false);
+}
+
+// ===== DELETE =====
+function openDeleteConfirm() {
+    if (selectedIndex < 0) return;
+    openModal('deleteModal');
+}
+
+function confirmDelete() {
+    employees.splice(selectedIndex, 1);
+    selectedIndex = -1;
+    filteredEmployees = [...employees];
+    hideSuaXoa();
+    closeModal('deleteModal');
+    renderEmployees();
+    showToast('✓', 'Đã xóa thông tin nhân viên', 'Thông tin đã được lưu vào hệ thống', false);
+}
+
+// ===== CHẤM CÔNG =====
+function openChamCong(idx, ev) {
+    if (ev) ev.stopPropagation();
+    const e = employees[idx];
+    document.getElementById('cc_maNV').value = e.maNV;
+    document.getElementById('cc_tenNV').value = e.tenNV;
+    document.getElementById('cc_caLam').value = '';
+    document.getElementById('cc_gioVao').value = '';
+    document.getElementById('cc_gioRa').value = '';
+    document.getElementById('cc_ngay').value = new Date().toISOString().split('T')[0];
+    document.getElementById('ccErrorBanner').classList.remove('show');
+    ['cc_caLam','cc_gioVao','cc_gioRa','cc_ngay'].forEach(id => {
+        document.getElementById(id).classList.remove('error');
+    });
+    openModal('chamCongModal');
+}
+
+function validateTime(str) {
+    return /^\d{1,2}:\d{2}$/.test(str.trim());
+}
+
+function submitChamCong() {
+    let valid = true;
+    const caLam = document.getElementById('cc_caLam').value;
+    const gioVao = document.getElementById('cc_gioVao').value;
+    const gioRa = document.getElementById('cc_gioRa').value;
+    const ngay = document.getElementById('cc_ngay').value;
+
+    if (!caLam) { document.getElementById('cc_caLam').classList.add('error'); valid = false; }
+    else document.getElementById('cc_caLam').classList.remove('error');
+
+    if (!validateTime(gioVao)) { document.getElementById('cc_gioVao').classList.add('error'); valid = false; }
+    else document.getElementById('cc_gioVao').classList.remove('error');
+
+    if (!validateTime(gioRa)) { document.getElementById('cc_gioRa').classList.add('error'); valid = false; }
+    else document.getElementById('cc_gioRa').classList.remove('error');
+
+    if (!ngay) { document.getElementById('cc_ngay').classList.add('error'); valid = false; }
+    else document.getElementById('cc_ngay').classList.remove('error');
+
+    if (!valid) {
+        document.getElementById('ccErrorBanner').classList.add('show');
+        return;
+    }
+
+    // Determine status
+    const maNV = document.getElementById('cc_maNV').value;
+    const tenNV = document.getElementById('cc_tenNV').value;
+    const caStart = caLam.match(/(\d+):(\d+)/);
+    let trangThai = 'Đúng giờ';
+    if (caStart) {
+        const caH = parseInt(caStart[1]);
+        const caM = parseInt(caStart[2]);
+        const [vH, vM] = gioVao.split(':').map(Number);
+        if (vH * 60 + vM > caH * 60 + caM + 5) trangThai = 'Trễ';
+        else if (vH * 60 + vM < caH * 60 + caM - 5) trangThai = 'Vào sớm';
+    }
+
+    const [d, m, y] = [new Date().getDate(), new Date().getMonth()+1, new Date().getFullYear()];
+    attendanceRecords.unshift({ maNV, tenNV, caLam, gioVao: gioVao.trim(), gioRa: gioRa.trim(), ngay: `${d}/${m}/${y}`, trangThai });
+    closeModal('chamCongModal');
+    showToast('✓', 'Chấm công thành công!', 'Thông tin đã được lưu', false);
+    renderAttendance();
+}
+
+// ===== ATTENDANCE VIEW =====
+function renderAttendance() {
+    const tbody = document.getElementById('attendanceBody');
+    tbody.innerHTML = attendanceRecords.map((r, i) => {
+        let tagClass = 'tag-ontime', tagText = r.trangThai;
+        if (r.trangThai === 'Trễ') tagClass = 'tag-late';
+        else if (r.trangThai === 'Vào sớm') tagClass = 'tag-early';
+        return `<tr>
+            <td class="center">${i+1}</td>
+            <td>${r.maNV}</td>
+            <td>${r.tenNV}</td>
+            <td>${r.caLam}</td>
+            <td class="center">${r.gioVao}</td>
+            <td class="center">${r.gioRa}</td>
+            <td class="center">${r.ngay}</td>
+            <td class="center"><span class="status-tag ${tagClass}">${tagText}</span></td>
+            <td class="center"><span style="cursor:pointer;color:#888" onclick="deleteAttendance(${i})">🗑</span></td>
+        </tr>`;
+    }).join('');
+
+    const total = attendanceRecords.length;
+    const ontime = attendanceRecords.filter(r => r.trangThai === 'Đúng giờ').length;
+    const late = attendanceRecords.filter(r => r.trangThai === 'Trễ').length;
+    const early = attendanceRecords.filter(r => r.trangThai === 'Vào sớm').length;
+    document.getElementById('attendanceStats').innerHTML =
+        `<span>Tổng: <b>${total} bản ghi</b></span> &nbsp;
+         <span class="att-green">Đúng giờ: <b>${ontime}</b></span> &nbsp;
+         <span class="att-yellow">Trễ: <b>${late}</b></span> &nbsp;
+         <span class="att-red">Về sớm: <b>${early}</b></span>`;
+}
+
+function deleteAttendance(i) {
+    attendanceRecords.splice(i, 1);
+    renderAttendance();
+}
+
+function toggleView() {
+    inAttendanceView = !inAttendanceView;
+    if (inAttendanceView) {
+        document.getElementById('employeeView').style.display = 'none';
+        document.getElementById('attendanceView').style.display = 'block';
+        document.getElementById('btnToggleView').textContent = '👥 Danh sách nhân viên';
+        renderAttendance();
+    } else {
+        document.getElementById('employeeView').style.display = 'block';
+        document.getElementById('attendanceView').style.display = 'none';
+        document.getElementById('btnToggleView').textContent = '🕐 Bảng chấm công';
+    }
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(icon, title, desc, isError = false) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastIcon').className = 'toast-icon ' + (isError ? 'red' : 'green');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastDesc').textContent = desc;
+    toast.className = 'toast' + (isError ? ' error' : '') + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 3000);
+}
+function hideToast() {
+    document.getElementById('toast').classList.remove('show');
+}
+
+// ===== INIT =====
+renderEmployees();
+</script>
 </body>
 </html>

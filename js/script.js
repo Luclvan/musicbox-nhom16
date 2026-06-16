@@ -523,7 +523,7 @@ if (document.getElementById("dvTableBody")) {
         }
     ];
 
-    let selectedIndex = 0;
+    let selectedIndex = null;
     let editingIndex = null;
 
     const dvTableBody = document.getElementById("dvTableBody");
@@ -557,6 +557,19 @@ if (document.getElementById("dvTableBody")) {
         return "dv-status-red";
     }
 
+    function updateActionButtons() {
+        const btnEdit = document.getElementById("btnOpenEditDv");
+        const btnDelete = document.getElementById("btnOpenDeleteDv");
+
+        if (selectedIndex === null || !services[selectedIndex]) {
+            btnEdit.classList.add("dv-btn-disabled");
+            btnDelete.classList.add("dv-btn-disabled");
+        } else {
+            btnEdit.classList.remove("dv-btn-disabled");
+            btnDelete.classList.remove("dv-btn-disabled");
+        }
+    }
+
     function renderServices() {
         const keyword = dvSearch.value.trim().toLowerCase();
 
@@ -571,7 +584,10 @@ if (document.getElementById("dvTableBody")) {
             const realIndex = services.indexOf(s);
 
             const tr = document.createElement("tr");
-            if (realIndex === selectedIndex) tr.classList.add("selected");
+
+            if (realIndex === selectedIndex) {
+                tr.classList.add("selected");
+            }
 
             tr.innerHTML = `
                 <td>${s.id}</td>
@@ -582,7 +598,8 @@ if (document.getElementById("dvTableBody")) {
                 <td class="${getStatusClass(s.status)}">${s.status}</td>
             `;
 
-            tr.addEventListener("click", function () {
+            tr.addEventListener("click", function (e) {
+                e.stopPropagation();
                 selectedIndex = realIndex;
                 renderServices();
             });
@@ -591,6 +608,8 @@ if (document.getElementById("dvTableBody")) {
         });
 
         dvTotal.textContent = "Tổng số dịch vụ: " + filtered.length;
+
+        updateActionButtons();
         saveLocal();
     }
 
@@ -615,10 +634,7 @@ if (document.getElementById("dvTableBody")) {
     }
 
     function openEditModal() {
-        if (selectedIndex === null || !services[selectedIndex]) {
-            alert("Vui lòng chọn dịch vụ cần sửa");
-            return;
-        }
+        if (selectedIndex === null || !services[selectedIndex]) return;
 
         editingIndex = selectedIndex;
         const s = services[selectedIndex];
@@ -717,10 +733,7 @@ if (document.getElementById("dvTableBody")) {
     }
 
     function deleteService() {
-        if (selectedIndex === null || !services[selectedIndex]) {
-            alert("Vui lòng chọn dịch vụ cần xoá");
-            return;
-        }
+        if (selectedIndex === null || !services[selectedIndex]) return;
 
         dvDeleteModal.style.display = "flex";
     }
@@ -753,24 +766,64 @@ if (document.getElementById("dvTableBody")) {
         }, 3000);
     }
 
-    document.getElementById("btnOpenAddDv").addEventListener("click", openAddModal);
-    document.getElementById("btnOpenEditDv").addEventListener("click", openEditModal);
-    document.getElementById("btnOpenDeleteDv").addEventListener("click", deleteService);
+    document.getElementById("btnOpenAddDv").addEventListener("click", function (e) {
+        e.stopPropagation();
+        openAddModal();
+    });
 
-    document.getElementById("btnSaveDv").addEventListener("click", saveService);
-    document.getElementById("btnCancelDv").addEventListener("click", function () {
+    document.getElementById("btnOpenEditDv").addEventListener("click", function (e) {
+        e.stopPropagation();
+        openEditModal();
+    });
+
+    document.getElementById("btnOpenDeleteDv").addEventListener("click", function (e) {
+        e.stopPropagation();
+        deleteService();
+    });
+
+    document.getElementById("btnSaveDv").addEventListener("click", function (e) {
+        e.stopPropagation();
+        saveService();
+    });
+
+    document.getElementById("btnCancelDv").addEventListener("click", function (e) {
+        e.stopPropagation();
         dvModal.style.display = "none";
     });
 
-    document.getElementById("btnConfirmDeleteDv").addEventListener("click", confirmDeleteService);
-    document.getElementById("btnCancelDeleteDv").addEventListener("click", function () {
+    document.getElementById("btnConfirmDeleteDv").addEventListener("click", function (e) {
+        e.stopPropagation();
+        confirmDeleteService();
+    });
+
+    document.getElementById("btnCancelDeleteDv").addEventListener("click", function (e) {
+        e.stopPropagation();
         dvDeleteModal.style.display = "none";
     });
 
-    dvSearch.addEventListener("input", renderServices);
+    dvSearch.addEventListener("click", function (e) {
+        e.stopPropagation();
+    });
+
+    dvSearch.addEventListener("input", function () {
+        selectedIndex = null;
+        renderServices();
+    });
 
     document.querySelector(".toast-close").addEventListener("click", function () {
         document.getElementById("toastMessage").classList.remove("show");
+    });
+
+    document.addEventListener("click", function (e) {
+        if (
+            !e.target.closest(".dv-table") &&
+            !e.target.closest(".dv-actions") &&
+            !e.target.closest(".dv-modal") &&
+            !e.target.closest(".dv-delete-box")
+        ) {
+            selectedIndex = null;
+            renderServices();
+        }
     });
 
     renderServices();

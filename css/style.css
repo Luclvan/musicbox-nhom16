@@ -977,3 +977,12 @@ td {
     justify-content: flex-end;
     gap: 8px;
 }
+.dv-btn-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dv-table tr.selected {
+    background: #d7f2ff;
+}

@@ -314,3 +314,159 @@ btnConfirmCancel.addEventListener('click', () => {
     // Hiển thị thông báo Toast màu xanh ở góc phải màn hình
     showToast('Hủy đặt phòng thành công!', 'Thông tin đã được lưu vào hệ thống');
 });
+
+// --- XỬ LÝ POPUP TẠO PHIẾU THUÊ PHÒNG ---
+const checkinModal = document.getElementById('checkinModal');
+const checkinId = document.getElementById('checkinId');
+const checkinName = document.getElementById('checkinName');
+const checkinPhone = document.getElementById('checkinPhone');
+const checkinDate = document.getElementById('checkinDate');
+
+const errCheckinName = document.getElementById('errCheckinName');
+const errCheckinPhone = document.getElementById('errCheckinPhone');
+const errCheckinDate = document.getElementById('errCheckinDate');
+
+// Hàm tự động tạo Mã phiếu thuê (VD: MS16062026xx)
+function generateCheckinId() {
+    const today = new Date();
+    const d = String(today.getDate()).padStart(2, '0');
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const y = today.getFullYear();
+    const rand = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+    return `MS${d}${m}${y}${rand}`;
+}
+
+// Hàm reset và mở form Tạo phiếu
+function openCheckinModal() {
+    // Sinh mã và xoá trắng dữ liệu cũ
+    checkinId.value = generateCheckinId();
+    checkinName.value = '';
+    checkinPhone.value = '';
+    checkinDate.value = '';
+
+    // Tắt hết các thông báo đỏ đang đè lên input
+    errCheckinName.style.display = 'none';
+    errCheckinPhone.style.display = 'none';
+    errCheckinDate.style.display = 'none';
+
+    // Đóng menu chuột phải (nếu đang mở) và hiện popup
+    contextMenu.style.display = 'none';
+    checkinModal.style.display = 'flex';
+}
+
+// Lắng nghe sự kiện click từ Menu chuột phải
+menuItems.checkin.addEventListener('click', function() {
+    if (this.classList.contains('disabled')) return;
+    openCheckinModal();
+});
+
+// Lắng nghe sự kiện Double Click (Chuột trái đúp) vào các phòng trống & đã đặt
+// Lắng nghe sự kiện Double Click vào phòng
+rooms.forEach(room => {
+    room.addEventListener('dblclick', function() {
+        const isAvailable = this.classList.contains('bg-available');
+        const isReserved = this.classList.contains('bg-reserved');
+        const isInUse = this.classList.contains('bg-in-use');
+        
+        // Trống hoặc Đã đặt -> Tạo phiếu thuê
+        if (isAvailable || isReserved) {
+            openCheckinModal();
+        } 
+        // Đang sử dụng -> Thanh toán
+        else if (isInUse) {
+            openCheckoutModal();
+        }
+    });
+});
+
+// Sự kiện: Khi click vào thông báo đỏ, sẽ tự động ẩn báo lỗi và trỏ chuột vào ô input
+[errCheckinName, errCheckinPhone, errCheckinDate].forEach(errDiv => {
+    errDiv.addEventListener('click', function() {
+        this.style.display = 'none';
+        // Tìm ô input tương ứng với thông báo lỗi để focus vào (vd: errCheckinName -> checkinName)
+        const inputId = this.id.replace('err', '');
+        const actualInputId = inputId.charAt(0).toLowerCase() + inputId.slice(1);
+        document.getElementById(actualInputId).focus();
+    });
+});
+
+// Nút Huỷ
+// Bấm "Huỷ" ở form Tạo Phiếu
+document.getElementById('btnCancelCheckin').addEventListener('click', () => {
+    document.getElementById('cancelCheckinConfirmModal').style.display = 'flex';
+});
+
+// Bấm "Xác nhận" (Đồng ý huỷ tạo phiếu)
+document.getElementById('btnYesCancelCheckin').addEventListener('click', () => {
+    document.getElementById('cancelCheckinConfirmModal').style.display = 'none';
+    checkinModal.style.display = 'none'; // Đóng cả form tạo phiếu
+});
+
+// Bấm "Huỷ" (Không huỷ nữa, quay lại form)
+document.getElementById('btnNoCancelCheckin').addEventListener('click', () => {
+    document.getElementById('cancelCheckinConfirmModal').style.display = 'none';
+});
+
+// Nút Xác nhận và Validate thông tin
+document.getElementById('btnConfirmCheckin').addEventListener('click', () => {
+    let isValid = true;
+
+    if (checkinName.value.trim() === '') {
+        errCheckinName.style.display = 'flex';
+        isValid = false;
+    }
+    
+    if (checkinPhone.value.trim() === '') {
+        errCheckinPhone.style.display = 'flex';
+        isValid = false;
+    }
+    
+    if (checkinDate.value.trim() === '') {
+        errCheckinDate.style.display = 'flex';
+        isValid = false;
+    }
+
+    // Nếu thông tin điền đầy đủ
+    if (isValid) {
+        checkinModal.style.display = 'none';
+        showToast('Tạo phiếu thuê thành công!', 'Thông tin đã được lưu vào hệ thống');
+    }
+});
+
+// --- XỬ LÝ POPUP THANH TOÁN ---
+const checkoutModal = document.getElementById('checkoutModal');
+const cancelCheckoutConfirmModal = document.getElementById('cancelCheckoutConfirmModal');
+
+// Hàm mở form thanh toán
+function openCheckoutModal() {
+    contextMenu.style.display = 'none';
+    checkoutModal.style.display = 'flex';
+}
+
+// Click chuột phải chọn "Thanh toán"
+menuItems.checkout.addEventListener('click', function() {
+    if (this.classList.contains('disabled')) return;
+    openCheckoutModal();
+});
+
+// Bấm "Thanh toán" (Xác nhận)
+document.getElementById('btnConfirmCheckout').addEventListener('click', () => {
+    checkoutModal.style.display = 'none';
+    showToast('Thanh toán thành công!', 'Thông tin đã được lưu vào hệ thống');
+});
+
+// Bấm "Huỷ" ở form Thanh toán
+document.getElementById('btnCancelCheckout').addEventListener('click', () => {
+    cancelCheckoutConfirmModal.style.display = 'flex';
+});
+
+// Bấm "Xác nhận" (Đồng ý huỷ quá trình thanh toán)
+document.getElementById('btnYesCancelCheckout').addEventListener('click', () => {
+    cancelCheckoutConfirmModal.style.display = 'none';
+    checkoutModal.style.display = 'none'; // Đóng cả form thanh toán
+});
+
+// Bấm "Huỷ" (Không huỷ thanh toán nữa)
+document.getElementById('btnNoCancelCheckout').addEventListener('click', () => {
+    cancelCheckoutConfirmModal.style.display = 'none';
+});

@@ -476,59 +476,47 @@ document.getElementById('btnNoCancelCheckout').addEventListener('click', () => {
 
 if (document.getElementById("dvTableBody")) {
     let services = JSON.parse(localStorage.getItem("dichVuList")) || [
-        {
-            id: "DV-001",
-            name: "Nước suối Aquafina",
-            type: "Đồ uống",
-            unit: "Chai",
-            price: 15000,
-            quantity: 42,
-            status: "Đang kinh doanh"
-        },
-        {
-            id: "DV-002",
-            name: "Thuê trống cầm tay",
-            type: "Phụ kiện",
-            unit: "Cái",
-            price: 10000,
-            quantity: 15,
-            status: "Đang kinh doanh"
-        },
-        {
-            id: "DV-003",
-            name: "Gói hạt hướng dương",
-            type: "Đồ ăn nhanh",
-            unit: "Gói",
-            price: 20000,
-            quantity: 0,
-            status: "Hết hàng"
-        },
-        {
-            id: "DV-004",
-            name: "Thuê mic",
-            type: "Phụ kiện",
-            unit: "Cái",
-            price: 20000,
-            quantity: 3,
-            status: "Đang kinh doanh"
-        },
-        {
-            id: "DV-005",
-            name: "Gói trang trí sinh nhật",
-            type: "Sự kiện",
-            unit: "Gói",
-            price: 250000,
-            quantity: 0,
-            status: "Tạm ngừng"
-        }
+        { id: "DV-001", name: "Nước suối Aquafina", type: "Đồ uống", unit: "Chai", price: 15000, quantity: 42, status: "Đang kinh doanh" },
+        { id: "DV-002", name: "Pepsi", type: "Đồ uống", unit: "Lon", price: 18000, quantity: 35, status: "Đang kinh doanh" },
+        { id: "DV-003", name: "Coca Cola", type: "Đồ uống", unit: "Lon", price: 18000, quantity: 28, status: "Đang kinh doanh" },
+        { id: "DV-004", name: "7 Up", type: "Đồ uống", unit: "Lon", price: 18000, quantity: 12, status: "Đang kinh doanh" },
+        { id: "DV-005", name: "Sting đỏ", type: "Đồ uống", unit: "Lon", price: 20000, quantity: 22, status: "Đang kinh doanh" },
+        { id: "DV-006", name: "Bò khô", type: "Đồ ăn", unit: "Gói", price: 35000, quantity: 18, status: "Đang kinh doanh" },
+        { id: "DV-007", name: "Khô gà", type: "Đồ ăn", unit: "Gói", price: 40000, quantity: 20, status: "Đang kinh doanh" },
+        { id: "DV-008", name: "Snack Oishi", type: "Đồ ăn", unit: "Gói", price: 15000, quantity: 60, status: "Đang kinh doanh" },
+        { id: "DV-009", name: "Bắp rang bơ", type: "Đồ ăn", unit: "Hộp", price: 45000, quantity: 16, status: "Đang kinh doanh" },
+        { id: "DV-010", name: "Mì ly", type: "Đồ ăn", unit: "Ly", price: 30000, quantity: 14, status: "Đang kinh doanh" },
+        { id: "DV-011", name: "Khăn lạnh", type: "Phụ kiện", unit: "Cái", price: 5000, quantity: 100, status: "Đang kinh doanh" },
+        { id: "DV-012", name: "Thuê micro", type: "Phụ kiện", unit: "Cái", price: 20000, quantity: 5, status: "Đang kinh doanh" },
+        { id: "DV-013", name: "Thuê trống", type: "Phụ kiện", unit: "Cái", price: 30000, quantity: 4, status: "Đang kinh doanh" },
+        { id: "DV-014", name: "Trang trí sinh nhật", type: "Sự kiện", unit: "Gói", price: 250000, quantity: 2, status: "Đang kinh doanh" },
+        { id: "DV-015", name: "Trang trí cầu hôn", type: "Sự kiện", unit: "Gói", price: 500000, quantity: 1, status: "Đang kinh doanh" },
+        { id: "DV-016", name: "Tiger", type: "Đồ uống", unit: "Lon", price: 25000, quantity: 40, status: "Đang kinh doanh" },
+        { id: "DV-017", name: "Heineken", type: "Đồ uống", unit: "Lon", price: 30000, quantity: 30, status: "Đang kinh doanh" },
+        { id: "DV-018", name: "Revive", type: "Đồ uống", unit: "Chai", price: 18000, quantity: 12, status: "Đang kinh doanh" },
+        { id: "DV-019", name: "Trà xanh", type: "Đồ uống", unit: "Chai", price: 18000, quantity: 25, status: "Đang kinh doanh" },
+        { id: "DV-020", name: "Red Bull", type: "Đồ uống", unit: "Lon", price: 22000, quantity: 15, status: "Đang kinh doanh" },
+        { id: "DV-021", name: "Xúc xích", type: "Đồ ăn", unit: "Cây", price: 25000, quantity: 18, status: "Đang kinh doanh" },
+        { id: "DV-022", name: "Cá viên", type: "Đồ ăn", unit: "Xiên", price: 20000, quantity: 10, status: "Đang kinh doanh" },
+        { id: "DV-023", name: "Bánh tráng", type: "Đồ ăn", unit: "Phần", price: 30000, quantity: 12, status: "Đang kinh doanh" },
+        { id: "DV-024", name: "Khoai tây chiên", type: "Đồ ăn", unit: "Phần", price: 45000, quantity: 8, status: "Đang kinh doanh" },
+        { id: "DV-025", name: "Mực nướng", type: "Đồ ăn", unit: "Phần", price: 70000, quantity: 6, status: "Đang kinh doanh" },
+        { id: "DV-026", name: "Loa Bluetooth", type: "Phụ kiện", unit: "Cái", price: 50000, quantity: 2, status: "Tạm ngừng" },
+        { id: "DV-027", name: "Pin micro", type: "Phụ kiện", unit: "Viên", price: 10000, quantity: 80, status: "Đang kinh doanh" },
+        { id: "DV-028", name: "Khăn giấy", type: "Phụ kiện", unit: "Gói", price: 8000, quantity: 55, status: "Đang kinh doanh" },
+        { id: "DV-029", name: "Combo sinh nhật", type: "Sự kiện", unit: "Gói", price: 800000, quantity: 1, status: "Tạm ngừng" },
+        { id: "DV-030", name: "Combo cầu hôn VIP", type: "Sự kiện", unit: "Gói", price: 1200000, quantity: 1, status: "Tạm ngừng" }
     ];
 
     let selectedIndex = null;
     let editingIndex = null;
+    let currentPage = 1;
+    const rowsPerPage = 10;
 
     const dvTableBody = document.getElementById("dvTableBody");
     const dvSearch = document.getElementById("dvSearch");
     const dvTotal = document.getElementById("dvTotal");
+    const dvPagination = document.querySelector(".dv-pagination");
 
     const dvModal = document.getElementById("dvModal");
     const dvDeleteModal = document.getElementById("dvDeleteModal");
@@ -557,6 +545,15 @@ if (document.getElementById("dvTableBody")) {
         return "dv-status-red";
     }
 
+    function getFilteredServices() {
+        const keyword = dvSearch.value.trim().toLowerCase();
+
+        return services.filter(s =>
+            s.id.toLowerCase().includes(keyword) ||
+            s.name.toLowerCase().includes(keyword)
+        );
+    }
+
     function updateActionButtons() {
         const btnEdit = document.getElementById("btnOpenEditDv");
         const btnDelete = document.getElementById("btnOpenDeleteDv");
@@ -570,17 +567,70 @@ if (document.getElementById("dvTableBody")) {
         }
     }
 
-    function renderServices() {
-        const keyword = dvSearch.value.trim().toLowerCase();
+    function renderPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
 
-        const filtered = services.filter(s =>
-            s.id.toLowerCase().includes(keyword) ||
-            s.name.toLowerCase().includes(keyword)
-        );
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        dvPagination.innerHTML = "";
+
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "‹";
+        prevBtn.disabled = currentPage === 1;
+
+        if (currentPage === 1) {
+            prevBtn.classList.add("dv-page-disabled");
+        }
+
+        prevBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            if (currentPage > 1) {
+                currentPage--;
+                selectedIndex = null;
+                renderServices();
+            }
+        });
+
+        const pageBtn = document.createElement("button");
+        pageBtn.textContent = currentPage;
+        pageBtn.classList.add("active");
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "›";
+        nextBtn.disabled = currentPage === totalPages;
+
+        if (currentPage === totalPages) {
+            nextBtn.classList.add("dv-page-disabled");
+        }
+
+        nextBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                selectedIndex = null;
+                renderServices();
+            }
+        });
+
+        dvPagination.appendChild(prevBtn);
+        dvPagination.appendChild(pageBtn);
+        dvPagination.appendChild(nextBtn);
+    }
+
+    function renderServices() {
+        const filtered = getFilteredServices();
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageItems = filtered.slice(start, end);
 
         dvTableBody.innerHTML = "";
 
-        filtered.forEach((s) => {
+        pageItems.forEach((s) => {
             const realIndex = services.indexOf(s);
 
             const tr = document.createElement("tr");
@@ -624,6 +674,7 @@ if (document.getElementById("dvTableBody")) {
 
         dvTotal.textContent = "Tổng số dịch vụ: " + filtered.length;
 
+        renderPagination(filtered.length);
         updateActionButtons();
         saveLocal();
     }
@@ -643,8 +694,10 @@ if (document.getElementById("dvTableBody")) {
     function openAddModal() {
         editingIndex = null;
         resetForm();
+
         dvModalTitle.textContent = "Nhập thông tin dịch vụ";
         document.getElementById("btnSaveDv").textContent = "Lưu";
+
         dvModal.style.display = "flex";
     }
 
@@ -652,6 +705,7 @@ if (document.getElementById("dvTableBody")) {
         if (selectedIndex === null || !services[selectedIndex]) return;
 
         editingIndex = selectedIndex;
+
         const s = services[selectedIndex];
 
         dvModalTitle.textContent = "Sửa thông tin dịch vụ";
@@ -735,11 +789,14 @@ if (document.getElementById("dvTableBody")) {
 
         if (editingIndex === null) {
             services.push(service);
+            currentPage = Math.ceil(services.length / rowsPerPage);
             selectedIndex = services.length - 1;
+
             showToastDv("Thêm dịch vụ thành công!", "Thông tin đã được lưu vào hệ thống");
         } else {
             services[editingIndex] = service;
             selectedIndex = editingIndex;
+
             showToastDv("Cập nhật dịch vụ thành công!", "Thông tin đã được lưu vào hệ thống");
         }
 
@@ -755,15 +812,18 @@ if (document.getElementById("dvTableBody")) {
 
     function confirmDeleteService() {
         services.splice(selectedIndex, 1);
+        selectedIndex = null;
 
-        if (services.length === 0) {
-            selectedIndex = null;
-        } else if (selectedIndex >= services.length) {
-            selectedIndex = services.length - 1;
+        const filtered = getFilteredServices();
+        const totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
         }
 
         dvDeleteModal.style.display = "none";
         renderServices();
+
         showToastDv("Xóa dịch vụ thành công!", "Thông tin đã được cập nhật");
     }
 
@@ -821,6 +881,7 @@ if (document.getElementById("dvTableBody")) {
     });
 
     dvSearch.addEventListener("input", function () {
+        currentPage = 1;
         selectedIndex = null;
         renderServices();
     });
@@ -834,7 +895,8 @@ if (document.getElementById("dvTableBody")) {
             !e.target.closest(".dv-table") &&
             !e.target.closest(".dv-actions") &&
             !e.target.closest(".dv-modal") &&
-            !e.target.closest(".dv-delete-box")
+            !e.target.closest(".dv-delete-box") &&
+            !e.target.closest(".dv-pagination")
         ) {
             selectedIndex = null;
             renderServices();
@@ -842,13 +904,4 @@ if (document.getElementById("dvTableBody")) {
     });
 
     renderServices();
-}
-
-// Initialize Flatpickr for all date inputs
-if (typeof flatpickr !== "undefined") {
-    flatpickr(".date-picker", {
-        dateFormat: "d/m/Y",
-        locale: "vn",
-        allowInput: true
-    });
 }

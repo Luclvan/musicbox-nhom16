@@ -843,3 +843,12 @@ if (document.getElementById("dvTableBody")) {
 
     renderServices();
 }
+
+// Initialize Flatpickr for all date inputs
+if (typeof flatpickr !== "undefined") {
+    flatpickr(".date-picker", {
+        dateFormat: "d/m/Y",
+        locale: "vn",
+        allowInput: true
+    });
+}

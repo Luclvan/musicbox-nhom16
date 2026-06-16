@@ -163,8 +163,53 @@ function setupFilter(monthId, fromId, toId, btnId, dataId, hintId, onView) {
   btn.addEventListener('click', function () {
     if (!btn.disabled) {
       document.getElementById(hintId).style.display = 'none';
-      document.getElementById(dataId).style.display = '';
-      onView && onView();
+
+      let valM = mInp ? mInp.value.trim() : '';
+      let valF = fInp ? fInp.value.trim() : '';
+      let valT = tInp ? tInp.value.trim() : '';
+      
+      // MOCK LOGIC: Dữ liệu mẫu chỉ có của tháng 05/2026.
+      let hasData = false;
+      if (valM.includes('05')) hasData = true;
+      if (valF.includes('/05/') || valF.includes('/5/')) hasData = true;
+      if (valT.includes('/05/') || valT.includes('/5/')) hasData = true;
+      if (!valM && !valF && !valT) hasData = false;
+      
+      let emptyId = dataId + 'Empty';
+      let elEmpty = document.getElementById(emptyId);
+      if (!elEmpty) {
+          elEmpty = document.createElement('div');
+          elEmpty.id = emptyId;
+          elEmpty.className = '';
+          elEmpty.innerHTML = `
+<div class="empty-state" style="width: 100%;">
+  <div class="es-warn" style="margin-bottom: 16px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-top: -2px;">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    Không có dữ liệu trong khoảng thời gian đã chọn.
+  </div>
+  <div class="es-body" style="border: 1px solid var(--c-border); border-radius: var(--radius-lg); background: var(--c-white); padding: 80px 0;">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+       <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+       <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+    </svg>
+    <p style="margin-top: 16px; font-size: 16px; color: #a1a1aa; font-weight: 500;">Không có dữ liệu trong khoảng thời gian đã chọn</p>
+  </div>
+</div>`;
+          document.getElementById(dataId).parentNode.appendChild(elEmpty);
+      }
+
+      if (hasData) {
+          document.getElementById(dataId).style.display = '';
+          elEmpty.style.display = 'none';
+          onView && onView();
+      } else {
+          document.getElementById(dataId).style.display = 'none';
+          elEmpty.style.display = 'flex';
+      }
     }
   });
 }
@@ -354,28 +399,56 @@ function showAuthError(msg) {
 /* ─── XUẤT FILE (SIMULATION + TOAST) ─────────────── */
 
 function triggerExport(type, name) {
+  const map = {
+    'doanh-thu': 'dataDt',
+    'dich-vu': 'dataDv',
+    'khung-gio': 'dataKg',
+    'cham-cong': 'dataCc'
+  };
+  
+  const dataId = map[name];
+  if (dataId) {
+    const dataEl = document.getElementById(dataId);
+    if (!dataEl || dataEl.style.display === 'none') {
+       showToastBc('error', 'Không có dữ liệu!', 'Vui lòng chọn thời gian và xem báo cáo trước khi xuất file.');
+       return;
+    }
+  }
+
   // Giả lập 85% thành công, 15% thất bại
   const ok = Math.random() > 0.15;
-  const slug = name + '-06-2026.' + type.toLowerCase();
+  const ext = type === 'Excel' ? 'xlsx' : 'pdf';
+  const slug = name + '-05-2026.' + ext;
   if (ok) {
-    showToast('success', 'Xuất file thành công!', slug + ' đã được tải về thiết bị');
+    showToastBc('success', 'Xuất file thành công!', slug + ' đã được tải về thiết bị');
   } else {
-    showToast('error', 'Xuất file thất bại!', 'Không thể tạo file. Vui lòng thử lại sau');
+    showToastBc('error', 'Xuất file thất bại!', 'Không thể tạo file. Vui lòng thử lại sau');
   }
 }
 
 /* ─── HỆ THỐNG TOAST ─────────────────────────────── */
 
-function showToast(type, title, desc) {
+function showToastBc(type, title, desc) {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
+  
+  let iconHtml = '';
+  if (type === 'success') {
+    iconHtml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+  } else {
+    iconHtml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  }
+
   toast.innerHTML =
-    `<div class="toast-body">
-       <div class="toast-title">${type === 'success' ? '✓ ' : '✕ '}${title}</div>
+    `<div class="toast-icon-wrap">${iconHtml}</div>
+     <div class="toast-body">
+       <div class="toast-title">${title}</div>
        <div class="toast-desc">${desc}</div>
      </div>
-     <button class="toast-x" onclick="this.parentElement.remove()">×</button>`;
+     <button class="toast-x" onclick="this.parentElement.remove()">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+     </button>`;
 
   container.prepend(toast);
   requestAnimationFrame(() => {

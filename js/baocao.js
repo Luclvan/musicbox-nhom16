@@ -275,7 +275,7 @@ function fmt(n) {
 /* ─── NHẬT KÝ HỆ THỐNG ───────────────────────────── */
 
 let currentLogFiltered = []; // Lưu lại danh sách đã lọc để phân trang đúng
-const LOG_PAGE_SIZE = 10;
+const LOG_PAGE_SIZE = 8;
 
 function renderLogTable(data, page = 1) {
   const tbody = document.getElementById('tbodyLog');
